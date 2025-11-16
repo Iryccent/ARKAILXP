@@ -60,7 +60,13 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
             });
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ error: await response.text() }));
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch {
+                    const errorText = await response.text();
+                    errorData = { error: errorText };
+                }
                 throw new Error(errorData.error || errorData.message || 'Error al conectar con KAI');
             }
 
