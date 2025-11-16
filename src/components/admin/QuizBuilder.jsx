@@ -8,7 +8,7 @@ const QuizBuilder = () => {
   const [infoBlock, setInfoBlock] = useState('');
   const [quizConfig, setQuizConfig] = useState({
     length: 5,
-    complexity: 'Intermedio',
+    complexity: 'Intermediate',
     customInstructions: '',
   });
   const [loading, setLoading] = useState(false);
@@ -78,18 +78,21 @@ const QuizBuilder = () => {
   };
 
   return (
-    <div className="builder-layout space-y-8">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-panel">
-          <h2 className="panel-title text-xl font-semibold text-text-primary mb-4">1. Paste your content</h2>
+    <div className="builder-layout space-y-8 pb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
+        {/* Sección 1: Paste Content */}
+        <div className="glass-panel p-6 lg:p-8">
+          <h2 className="text-xl font-semibold text-text-primary mb-4">1. Paste your content</h2>
           <textarea
-            className="info-textarea w-full h-96 p-4 bg-background/50 border border-border rounded-md focus:ring-2 focus:ring-accent-primary"
+            className="info-textarea w-full h-96 p-4 bg-background/50 border border-glass-border rounded-lg text-text-primary placeholder-text-secondary focus:ring-2 focus:ring-accent-primary/50 focus:outline-none resize-none transition-all"
             value={infoBlock}
             onChange={(e) => setInfoBlock(e.target.value)}
             placeholder="Paste course content, an article, meeting notes... anything!"
             disabled={loading}
           />
         </div>
+        
+        {/* Sección 2: Configure Parameters */}
         <MenuConfig 
           config={quizConfig} 
           setConfig={setQuizConfig} 
@@ -99,53 +102,69 @@ const QuizBuilder = () => {
       </div>
 
       {loading && (
-        <div className="text-center p-8 glass-panel flex flex-col items-center justify-center">
-            <Loader2 className="h-12 w-12 animate-spin text-accent-primary mb-4" />
-            <p className="text-lg text-text-primary">KAI is thinking...</p>
-            <p className="text-sm text-text-secondary">Analyzing your content and crafting questions.</p>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center p-8 lg:p-12 glass-panel flex flex-col items-center justify-center min-h-[200px]"
+        >
+          <Loader2 className="h-12 w-12 animate-spin text-accent-primary mb-4" />
+          <p className="text-lg font-medium text-text-primary mb-2">KAI is thinking...</p>
+          <p className="text-sm text-text-secondary">Analyzing your content and crafting questions.</p>
+        </motion.div>
       )}
 
       {generatedQuiz && (
         <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="generated-quiz-container glass-panel p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="generated-quiz-container glass-panel p-6 lg:p-8 mt-8"
         >
-          <h2 className="text-3xl font-bold text-text-primary mb-2 flex items-center">
-            <Sparkles className="h-8 w-8 text-accent-primary mr-3" />
-            {generatedQuiz.title}
-          </h2>
+          <div className="mb-6 pb-4 border-b border-glass-border">
+            <h2 className="text-2xl lg:text-3xl font-bold text-text-primary mb-2 flex items-center">
+              <Sparkles className="h-6 w-6 lg:h-8 lg:w-8 text-accent-primary mr-3" />
+              {generatedQuiz.title || 'Generated Quiz'}
+            </h2>
+            <p className="text-sm text-text-secondary">
+              {generatedQuiz.questions?.length || 0} questions generated
+            </p>
+          </div>
+          
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             className="space-y-6 mt-6"
           >
-            {generatedQuiz.questions.map((q, index) => (
+            {generatedQuiz.questions?.map((q, index) => (
               <motion.div
                 key={index}
                 variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0 } }}
-                className="p-6 bg-black/20 rounded-lg border border-border"
+                className="p-5 lg:p-6 bg-background/30 rounded-lg border border-glass-border hover:border-accent-primary/30 transition-colors"
               >
-                <p className="font-semibold text-lg text-text-primary">{index + 1}. {q.question}</p>
+                <p className="font-semibold text-base lg:text-lg text-text-primary mb-4">
+                  {index + 1}. {q.question}
+                </p>
                 <div className="mt-4 space-y-2">
-                  {q.options.map((option, i) => (
+                  {q.options?.map((option, i) => (
                     <div
                       key={i}
-                      className={`p-3 rounded-md text-sm ${
+                      className={`p-3 rounded-md text-sm transition-all ${
                         option === q.correct_answer
-                          ? 'bg-green-500/20 text-green-300 border border-green-500/30'
-                          : 'bg-background/30'
+                          ? 'bg-green-500/20 text-green-300 border-2 border-green-500/50 font-medium'
+                          : 'bg-background/50 text-text-secondary border border-glass-border'
                       }`}
                     >
-                      {option}
+                      {String.fromCharCode(65 + i)}. {option}
                     </div>
                   ))}
                 </div>
-                 <p className="text-xs text-text-secondary mt-3 pt-3 border-t border-border">
-                    <span className="font-bold">Explanation:</span> {q.explanation}
-                </p>
+                {q.explanation && (
+                  <div className="mt-4 pt-4 border-t border-glass-border">
+                    <p className="text-sm text-text-secondary">
+                      <span className="font-semibold text-text-primary">Explanation:</span> {q.explanation}
+                    </p>
+                  </div>
+                )}
               </motion.div>
             ))}
           </motion.div>

@@ -68,7 +68,7 @@ export async function chatWithAI({ provider, messages, options = {} }) {
  *   content: 'React es una biblioteca de JavaScript...',
  *   config: {
  *     length: 5,
- *     complexity: 'Intermedio',
+ *     complexity: 'Intermediate',
  *     customInstructions: 'Enfócate en conceptos clave'
  *   },
  *   provider: 'gemini'

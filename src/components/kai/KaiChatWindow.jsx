@@ -145,7 +145,8 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-24 right-5 w-[90vw] max-w-md h-[70vh] flex flex-col glass-panel-kai rounded-2xl shadow-2xl z-50"
+            className="fixed bottom-24 right-5 w-[90vw] max-w-md h-[70vh] flex flex-col glass-panel-kai rounded-2xl shadow-2xl"
+            style={{ zIndex: 'var(--z-kai-chat)' }}
         >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-glass-border">

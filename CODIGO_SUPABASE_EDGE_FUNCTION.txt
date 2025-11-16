@@ -1,58 +1,8 @@
-# 🚀 Supabase Edge Function: generate-quiz-ai
-
-Este documento contiene el código completo para crear la Edge Function `generate-quiz-ai` en Supabase.
-
-## 📋 Instrucciones de Deploy
-
-### Paso 1: Crear la Edge Function en Supabase
-
-1. Ve a tu proyecto en [Supabase Dashboard](https://supabase.com/dashboard)
-2. Navega a **Edge Functions** en el menú lateral
-3. Haz clic en **Create a new function**
-4. Nombre de la función: `generate-quiz-ai`
-5. Haz clic en **Create function**
-
-### Paso 2: Copiar el Código
-
-Copia el código completo del archivo `generate-quiz-ai/index.ts` (ver abajo) y pégalo en el editor de Supabase.
-
-### Paso 3: Verificar Variables de Entorno
-
-Asegúrate de que tienes configurada la variable de entorno `GEMINI_API_KEY` en Supabase:
-
-1. En el Dashboard de Supabase, ve a **Project Settings** → **Edge Functions** → **Secrets**
-2. Verifica que existe `GEMINI_API_KEY` con tu clave de API de Google Gemini
-3. Si no existe, añádela:
-   - **Name:** `GEMINI_API_KEY`
-   - **Value:** Tu clave de API de Gemini
-
-### Paso 4: Deploy
-
-1. Haz clic en **Deploy** en el editor de Supabase
-2. Espera a que el deploy termine (verás un mensaje de éxito)
-
-### Paso 5: Probar
-
-Puedes probar la función desde el Dashboard de Supabase usando el botón **Invoke function** o desde tu aplicación.
-
----
-
-## 📁 Estructura de Archivos
-
-Crea la siguiente estructura en Supabase:
-
-```
-supabase/functions/generate-quiz-ai/
-├── index.ts
-```
-
----
-
-## 📄 Código: `index.ts`
-
-```typescript
-// Supabase Edge Function: generate-quiz-ai
-// Genera quizzes educativos usando IA (Gemini, OpenAI, Claude)
+// ============================================
+// CÓDIGO COMPLETO PARA SUPABASE EDGE FUNCTION
+// Función: generate-quiz-ai
+// ============================================
+// Copia TODO este código y pégalo en Supabase
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -373,36 +323,4 @@ async function callClaudeAPI(apiKey: string, prompt: string) {
     content: data.content[0].text,
   }
 }
-```
-
----
-
-## ✅ Verificación Post-Deploy
-
-Después de hacer deploy, verifica que:
-
-1. ✅ La función aparece en la lista de Edge Functions
-2. ✅ El status es "Active"
-3. ✅ Puedes hacer "Invoke function" desde el Dashboard
-4. ✅ La función responde correctamente
-
----
-
-## 🔗 Endpoint
-
-Una vez deployada, la función estará disponible en:
-
-```
-https://[TU_PROJECT_REF].supabase.co/functions/v1/generate-quiz-ai
-```
-
-El proxy de Vercel (`/api/ai/generate-quiz`) llamará automáticamente a este endpoint.
-
----
-
-## 📝 Notas
-
-- Esta función usa la misma lógica que tenía el código de Vercel, pero ahora está centralizada en Supabase
-- Las claves API deben estar configuradas como Secrets en Supabase (no en Vercel)
-- El proxy de Vercel solo necesita `SUPABASE_URL` y `SUPABASE_ANON_KEY` (ya configuradas para el chatbot)
 
