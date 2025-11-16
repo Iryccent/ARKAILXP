@@ -99,15 +99,19 @@ En Vercel, agrega estas variables:
 2. Settings > Environment Variables
 3. Agrega cada variable:
 
-   | Variable | Valor | Entornos |
-   |----------|-------|----------|
-   | `VITE_SUPABASE_URL` | Tu URL de Supabase | Production, Preview, Development |
-   | `VITE_SUPABASE_ANON_KEY` | Tu Anon Key | Production, Preview, Development |
-   | `SUPABASE_URL` | Tu URL de Supabase (para funciones serverless) | Production, Preview, Development |
-   | `SUPABASE_ANON_KEY` | Tu Anon Key (para funciones serverless) | Production, Preview, Development |
-   | `GEMINI_API_KEY` | Tu clave de Gemini | Production, Preview, Development |
-   | `OPENAI_API_KEY` | Tu clave de OpenAI (opcional) | Production, Preview, Development |
-   | `CLAUDE_API_KEY` | Tu clave de Claude (opcional) | Production, Preview, Development |
+   | Variable | Valor | Entornos | Nota |
+   |----------|-------|----------|------|
+   | `VITE_SUPABASE_URL` | Tu URL de Supabase | Production, Preview, Development | Para el frontend |
+   | `VITE_SUPABASE_ANON_KEY` | Tu Anon Key | Production, Preview, Development | Para el frontend |
+   | `SUPABASE_URL` | **Mismo valor que VITE_SUPABASE_URL** | Production, Preview, Development | **OBLIGATORIO para funciones serverless** |
+   | `SUPABASE_ANON_KEY` | **Mismo valor que VITE_SUPABASE_ANON_KEY** | Production, Preview, Development | **OBLIGATORIO para funciones serverless** |
+   | `GEMINI_API_KEY` | Tu clave de Gemini | Production, Preview, Development | - |
+   | `OPENAI_API_KEY` | Tu clave de OpenAI (opcional) | Production, Preview, Development | - |
+   | `CLAUDE_API_KEY` | Tu clave de Claude (opcional) | Production, Preview, Development | - |
+
+**⚠️ IMPORTANTE:** Las funciones serverless de Vercel (`/api/kai/*`) **NO tienen acceso** a variables que empiezan con `VITE_`. Por eso necesitas duplicar las variables de Supabase:
+- Copia el **valor** de `VITE_SUPABASE_URL` y créalo como `SUPABASE_URL` (sin el prefijo `VITE_`)
+- Copia el **valor** de `VITE_SUPABASE_ANON_KEY` y créalo como `SUPABASE_ANON_KEY` (sin el prefijo `VITE_`)
 
 ---
 

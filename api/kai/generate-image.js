@@ -34,14 +34,21 @@ export default async function handler(req, res) {
     }
 
     // Obtener las variables de entorno de Supabase
-    // En funciones serverless, las variables VITE_ no están disponibles
-    // Usa SUPABASE_URL y SUPABASE_ANON_KEY (sin prefijo VITE_)
-    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+    // IMPORTANTE: Las funciones serverless de Vercel NO tienen acceso a variables VITE_*
+    // Debes agregar SUPABASE_URL y SUPABASE_ANON_KEY (sin prefijo VITE_) en Vercel
+    const supabaseUrl = process.env.SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
     if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('❌ Variables de entorno faltantes:', {
+        SUPABASE_URL: !!supabaseUrl,
+        SUPABASE_ANON_KEY: !!supabaseAnonKey,
+        availableEnvVars: Object.keys(process.env).filter(k => k.includes('SUPABASE'))
+      });
       return res.status(500).json({ 
-        error: 'Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY (or VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) in Vercel environment variables.' 
+        error: 'Supabase configuration missing',
+        message: 'Please add SUPABASE_URL and SUPABASE_ANON_KEY (without VITE_ prefix) in Vercel environment variables. These are different from VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.',
+        hint: 'Copy the values from VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY, but name them SUPABASE_URL and SUPABASE_ANON_KEY'
       });
     }
 
