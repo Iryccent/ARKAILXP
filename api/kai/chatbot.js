@@ -1,0 +1,75 @@
+/**
+ * 🔐 API Route Proxy para chatbot-kai de Supabase
+ * 
+ * Esta función actúa como proxy entre el frontend y la Supabase Edge Function
+ * para evitar problemas de CORS. Llama a la función chatbot-kai de Supabase
+ * y retorna la respuesta.
+ * 
+ * Uso desde el frontend:
+ * POST /api/kai/chatbot
+ * Body: { prompt: string }
+ */
+
+export default async function handler(req, res) {
+  // Configurar CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    const { prompt } = req.body;
+
+    if (!prompt || !prompt.trim()) {
+      return res.status(400).json({ 
+        error: 'Missing required field: prompt is required' 
+      });
+    }
+
+    // Obtener las variables de entorno de Supabase
+    // En funciones serverless, las variables VITE_ no están disponibles
+    // Usa SUPABASE_URL y SUPABASE_ANON_KEY (sin prefijo VITE_)
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+    const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return res.status(500).json({ 
+        error: 'Supabase configuration missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY (or VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY) in Vercel environment variables.' 
+      });
+    }
+
+    // Llamar a la Supabase Edge Function
+    const response = await fetch(`${supabaseUrl}/functions/v1/chatbot-kai`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+      },
+      body: JSON.stringify({ prompt }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.text();
+      throw new Error(`Supabase Edge Function error: ${response.status} - ${errorData}`);
+    }
+
+    const data = await response.json();
+
+    return res.status(200).json(data);
+
+  } catch (error) {
+    console.error('❌ Error en proxy de chatbot-kai:', error);
+    return res.status(500).json({ 
+      error: 'Error processing chatbot request',
+      message: error.message 
+    });
+  }
+}
+

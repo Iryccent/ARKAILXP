@@ -103,6 +103,8 @@ En Vercel, agrega estas variables:
    |----------|-------|----------|
    | `VITE_SUPABASE_URL` | Tu URL de Supabase | Production, Preview, Development |
    | `VITE_SUPABASE_ANON_KEY` | Tu Anon Key | Production, Preview, Development |
+   | `SUPABASE_URL` | Tu URL de Supabase (para funciones serverless) | Production, Preview, Development |
+   | `SUPABASE_ANON_KEY` | Tu Anon Key (para funciones serverless) | Production, Preview, Development |
    | `GEMINI_API_KEY` | Tu clave de Gemini | Production, Preview, Development |
    | `OPENAI_API_KEY` | Tu clave de OpenAI (opcional) | Production, Preview, Development |
    | `CLAUDE_API_KEY` | Tu clave de Claude (opcional) | Production, Preview, Development |
@@ -270,11 +272,20 @@ function MyComponent() {
 - Asegúrate de que NO tengan el prefijo `VITE_` (solo las del frontend lo tienen)
 - Reinicia el deploy después de agregar variables
 
-### Problema: CORS errors
+### Problema: CORS errors con Supabase Edge Functions
 
 **Solución:**
-- Las API routes ya tienen CORS configurado en `vercel.json`
-- Si persiste, verifica que el dominio esté permitido
+- **Opción 1 (Recomendada):** Usa las funciones proxy en Vercel (`/api/kai/chatbot`) que ya están configuradas
+- **Opción 2:** Actualiza CORS en Supabase:
+  1. Ve a tu proyecto en Supabase Dashboard
+  2. Edge Functions > chatbot-kai > Settings
+  3. Agrega tu dominio de Vercel a la lista de orígenes permitidos:
+     - `https://arkailxp-git-master-iryccents-projects.vercel.app`
+     - `https://*.vercel.app` (para todos los previews)
+     - Tu dominio personalizado si lo tienes
+  4. Guarda los cambios
+
+**Nota:** Las funciones proxy en Vercel (`/api/kai/chatbot`) ya están configuradas y evitan problemas de CORS.
 
 ### Problema: Build fails
 

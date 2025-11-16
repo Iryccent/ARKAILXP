@@ -47,17 +47,24 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
         setIsThinking(true);
 
         try {
-            // ✅ Llamar a la función serverless de Supabase: chatbot-kai
-            // Esta función usa gemini-2.5-flash-preview-09-2025 según las especificaciones
-            const { data, error } = await supabase.functions.invoke('chatbot-kai', {
-                body: {
+            // ✅ Llamar a la función proxy de Vercel que evita problemas de CORS
+            // Esta función llama a chatbot-kai de Supabase internamente
+            const response = await fetch('/api/kai/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
                     prompt: currentInput
-                }
+                })
             });
 
-            if (error) {
-                throw new Error(error.message || 'Error al conectar con KAI');
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: await response.text() }));
+                throw new Error(errorData.error || errorData.message || 'Error al conectar con KAI');
             }
+
+            const data = await response.json();
 
             if (data.error) {
                 throw new Error(data.error);
@@ -74,13 +81,20 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
 
                 // Luego generar la imagen automáticamente
                 try {
-                    const { data: imageData, error: imageError } = await supabase.functions.invoke('generate-image-kai', {
-                        body: {
+                    const imageResponse = await fetch('/api/kai/generate-image', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
                             prompt: currentInput // O extraer el prompt de la respuesta si es necesario
-                        }
+                        })
                     });
 
-                    if (!imageError && imageData?.imageUrl) {
+                    if (imageResponse.ok) {
+                        const imageData = await imageResponse.json();
+
+                        if (imageData?.imageUrl) {
                         const imageMessage = {
                             role: 'assistant',
                             content: `![Imagen generada](${imageData.imageUrl})`,
@@ -88,6 +102,7 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
                             imageUrl: imageData.imageUrl
                         };
                         setMessages(prev => [...prev, imageMessage]);
+                        }
                     }
                 } catch (imageError) {
                     console.error('Error generando imagen:', imageError);
