@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Toaster } from '@/components/ui/toaster';
@@ -14,21 +14,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import GlobalControls from '@/components/GlobalControls';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import KaiCompanion from '@/components/kai/KaiCompanion';
+import IntroVideo from '@/components/IntroVideo';
 
 function App() {
   const { user, loading, signOut } = useAuth();
+  const [introCompleted, setIntroCompleted] = useState(false);
   
   const handleLogout = async () => {
     await signOut();
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-2xl text-text-primary">Loading...</div>
-      </div>
-    );
-  }
 
   const PageWrapper = ({ children }) => (
     <motion.div
@@ -51,7 +45,22 @@ function App() {
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@300;600&display=swap" rel="stylesheet" />
       </Helmet>
       
-      <GlobalControls />
+      {/* Loading state - Se muestra mientras carga la autenticación */}
+      {loading ? (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="text-2xl text-text-primary">Loading...</div>
+        </div>
+      ) : (
+        <>
+          {/* Intro Video - Solo se muestra una vez por sesión, después del loading */}
+          {!introCompleted && (
+            <IntroVideo onComplete={() => setIntroCompleted(true)} />
+          )}
+          
+          {/* Contenido principal - Solo se muestra después del intro */}
+          {introCompleted && (
+            <>
+              <GlobalControls />
 
       <Router>
         <AnimatePresence mode="wait">
@@ -68,9 +77,13 @@ function App() {
         </AnimatePresence>
       </Router>
       
-      {user && <KaiCompanion />}
+              {user && <KaiCompanion />}
 
-      <Toaster />
+              <Toaster />
+            </>
+          )}
+        </>
+      )}
     </Suspense>
   );
 }
