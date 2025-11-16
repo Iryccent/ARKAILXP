@@ -11,10 +11,23 @@
  */
 
 export default async function handler(req, res) {
-  // Configurar CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // Configurar CORS - Permitir dominio de Vercel y dominio personalizado
+  const allowedOrigins = [
+    'https://arkailxp.vercel.app',
+    'https://www.arkailxp.vercel.app',
+    'https://j-irizarry.info',
+    'https://www.j-irizarry.info',
+    'http://localhost:5173', // Desarrollo local
+    'http://localhost:3000', // Desarrollo local alternativo
+  ];
+  
+  const origin = req.headers.origin;
+  const allowedOrigin = allowedOrigins.includes(origin) ? origin : allowedOrigins[0];
+  
+  res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();

@@ -37,94 +37,265 @@
 
   /* --- DYNAMIC THEME STYLES --- */
 
-  /* --- Light Themes --- */
-  .skywash {
-    --bg-color: #f0f9ff;
-    --text-primary: #0c4a6e;
-    --text-secondary: #38bdf8;
-    --accent-primary: #3b82f6;
-    --accent-secondary: #60a5fa;
-    --kai-elements-bg: #e0f2fe;
-    --glass-bg: rgba(255, 255, 255, 0.4);
-    --glass-border: rgba(0, 0, 0, 0.1);
-  }
-
-  .sunriseMeadow {
-    --bg-color: #FEFCE8;
-    --text-primary: #713F12;
-    --text-secondary: #A16207;
-    --accent-primary: #F59E0B;
-    --accent-secondary: #FBBF24;
-    --glass-bg: rgba(254, 252, 232, 0.5);
-    --glass-border: rgba(113, 63, 18, 0.2);
-  }
-  
-  .citrusPop {
-    --bg-color: #FFFBEB;
-    --text-primary: #D97706;
-    --text-secondary: #F59E0B;
-    --accent-primary: #FBBF24;
-  }
-  
-  .coralBloom {
-    --bg-color: #FFF1F2;
-    --text-primary: #DB2777;
-    --text-secondary: #F472B6;
-    --accent-primary: #EC4899;
-  }
-  
-  .pastelField {
-    --bg-color: #F0FDF4;
-    --text-primary: #166534;
-    --text-secondary: #4ADE80;
-    --accent-primary: #22C55E;
-  }
-  
-  .canyonGlow {
-    --bg-color: #FFF7ED;
-    --text-primary: #C2410C;
-    --text-secondary: #FB923C;
-    --accent-primary: #F97316;
-  }
-
-  /* --- Dark Themes --- */
+  /* --- All Dark Themes with Galaxy/Landscape Backgrounds --- */
+  /* Deep Space - Galaxy with stars */
   .deepSpace {
     --bg-color: #000000;
     --text-primary: #EAEAEA;
     --text-secondary: #A0A0A0;
     --accent-primary: #00A9FF;
     --accent-secondary: #89CFF0;
-    --glass-bg: rgba(10, 10, 10, 0.5);
+    --kai-elements-bg: #0a0a0a;
+    --glass-bg: rgba(10, 10, 20, 0.7);
+    --glass-border: rgba(0, 169, 255, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
   }
 
+  /* Nebula Veil - Purple galaxy */
   .nebulaVeil {
-    --bg-color: #191122;
+    --bg-color: #0a0515;
     --text-primary: #E8D5B5;
     --text-secondary: #B4A284;
     --accent-primary: #D946EF;
     --accent-secondary: #E879F9;
-    --glass-bg: rgba(25, 17, 34, 0.6);
+    --kai-elements-bg: #191122;
+    --glass-bg: rgba(25, 17, 34, 0.75);
+    --glass-border: rgba(217, 70, 239, 0.25);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
   }
 
+  /* Solar Eclipse - Dark landscape with orange glow */
   .solarEclipse {
-    --bg-color: #1F2937;
+    --bg-color: #0f0a0a;
     --text-primary: #FBBF24;
     --text-secondary: #F87171;
     --accent-primary: #F97316;
+    --accent-secondary: #FB923C;
+    --kai-elements-bg: #1F2937;
+    --glass-bg: rgba(31, 41, 55, 0.7);
+    --glass-border: rgba(249, 115, 22, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
   }
 
+  /* Event Horizon - Deep space blue */
   .eventHorizon {
-    --bg-color: #1E1B4B;
+    --bg-color: #0a0d1a;
     --text-primary: #A5B4FC;
     --text-secondary: #C7D2FE;
     --accent-primary: #818CF8;
+    --accent-secondary: #A5B4FC;
+    --kai-elements-bg: #1E1B4B;
+    --glass-bg: rgba(30, 27, 75, 0.75);
+    --glass-border: rgba(129, 140, 248, 0.25);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
   }
 
+  /* Lunar Surface - Moon landscape */
   .lunarSurface {
-    --bg-color: #374151;
+    --bg-color: #0f0f0f;
     --text-primary: #D1D5DB;
     --text-secondary: #9CA3AF;
     --accent-primary: #E5E7EB;
+    --accent-secondary: #F3F4F6;
+    --kai-elements-bg: #1a1a1a;
+    --glass-bg: rgba(55, 65, 81, 0.7);
+    --glass-border: rgba(229, 231, 235, 0.15);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Midnight Aurora - Dark with aurora colors */
+  .midnightAurora {
+    --bg-color: #0D1117;
+    --text-primary: #E6EDF3;
+    --text-secondary: #7D8590;
+    --accent-primary: #6366F1;
+    --accent-secondary: #818CF8;
+    --kai-elements-bg: #161B22;
+    --glass-bg: rgba(28, 33, 40, 0.7);
+    --glass-border: rgba(99, 102, 241, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Starfield Glass - Starry night */
+  .starfieldGlass {
+    --bg-color: #020617;
+    --text-primary: #E2E8F0;
+    --text-secondary: #94A3B8;
+    --accent-primary: #6366F1;
+    --accent-secondary: #818CF8;
+    --kai-elements-bg: #0f172a;
+    --glass-bg: rgba(15, 23, 42, 0.75);
+    --glass-border: rgba(99, 102, 241, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Galaxy Dust - Dark galaxy */
+  .galaxyDust {
+    --bg-color: #000000;
+    --text-primary: #E5E7EB;
+    --text-secondary: #9CA3AF;
+    --accent-primary: #8B5CF6;
+    --accent-secondary: #A78BFA;
+    --kai-elements-bg: #0a0a0a;
+    --glass-bg: rgba(20, 20, 30, 0.75);
+    --glass-border: rgba(139, 92, 246, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Comet Trail - Space with comet */
+  .cometTrail {
+    --bg-color: #0a0a1a;
+    --text-primary: #E0E7FF;
+    --text-secondary: #A5B4FC;
+    --accent-primary: #818CF8;
+    --accent-secondary: #A5B4FC;
+    --kai-elements-bg: #1e1b4b;
+    --glass-bg: rgba(30, 27, 75, 0.7);
+    --glass-border: rgba(129, 140, 248, 0.25);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Void Gradient - Deep space void */
+  .voidGradient {
+    --bg-color: #000510;
+    --text-primary: #CBD5E1;
+    --text-secondary: #94A3B8;
+    --accent-primary: #60A5FA;
+    --accent-secondary: #93C5FD;
+    --kai-elements-bg: #0a1628;
+    --glass-bg: rgba(9, 32, 63, 0.75);
+    --glass-border: rgba(96, 165, 250, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Skywash - Dark night sky */
+  .skywash {
+    --bg-color: #0a0f1a;
+    --text-primary: #E0F2FE;
+    --text-secondary: #7DD3FC;
+    --accent-primary: #3b82f6;
+    --accent-secondary: #60a5fa;
+    --kai-elements-bg: #0f172a;
+    --glass-bg: rgba(15, 23, 42, 0.7);
+    --glass-border: rgba(59, 130, 246, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.4);
+  }
+
+  /* Sunrise Meadow - Dark mountain landscape */
+  .sunriseMeadow {
+    --bg-color: #0f0a05;
+    --text-primary: #FEF3C7;
+    --text-secondary: #FCD34D;
+    --accent-primary: #F59E0B;
+    --accent-secondary: #FBBF24;
+    --kai-elements-bg: #1a1208;
+    --glass-bg: rgba(26, 18, 8, 0.75);
+    --glass-border: rgba(245, 158, 11, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Citrus Pop - Dark sunset landscape */
+  .citrusPop {
+    --bg-color: #1a0f05;
+    --text-primary: #FED7AA;
+    --text-secondary: #FDBA74;
+    --accent-primary: #FBBF24;
+    --accent-secondary: #FCD34D;
+    --kai-elements-bg: #2a1a0a;
+    --glass-bg: rgba(42, 26, 10, 0.75);
+    --glass-border: rgba(251, 191, 36, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Coral Bloom - Dark ocean sunset */
+  .coralBloom {
+    --bg-color: #1a0a0f;
+    --text-primary: #FCE7F3;
+    --text-secondary: #F9A8D4;
+    --accent-primary: #EC4899;
+    --accent-secondary: #F472B6;
+    --kai-elements-bg: #2a0f1a;
+    --glass-bg: rgba(42, 15, 26, 0.75);
+    --glass-border: rgba(236, 72, 153, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Pastel Field - Dark forest landscape */
+  .pastelField {
+    --bg-color: #0a150a;
+    --text-primary: #D1FAE5;
+    --text-secondary: #6EE7B7;
+    --accent-primary: #22C55E;
+    --accent-secondary: #4ADE80;
+    --kai-elements-bg: #0f1f0f;
+    --glass-bg: rgba(15, 31, 15, 0.75);
+    --glass-border: rgba(34, 197, 94, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Canyon Glow - Dark canyon landscape */
+  .canyonGlow {
+    --bg-color: #1a0f0a;
+    --text-primary: #FED7AA;
+    --text-secondary: #FDBA74;
+    --accent-primary: #F97316;
+    --accent-secondary: #FB923C;
+    --kai-elements-bg: #2a1a0f;
+    --glass-bg: rgba(42, 26, 15, 0.75);
+    --glass-border: rgba(249, 115, 22, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Tropical Ink - Dark tropical night */
+  .tropicalInk {
+    --bg-color: #0a0f15;
+    --text-primary: #E2E8F0;
+    --text-secondary: #94A3B8;
+    --accent-primary: #64748B;
+    --accent-secondary: #94A3B8;
+    --kai-elements-bg: #1a1f2a;
+    --glass-bg: rgba(26, 31, 42, 0.75);
+    --glass-border: rgba(100, 116, 139, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Coastal Breeze - Dark ocean night */
+  .coastalBreeze {
+    --bg-color: #0a1518;
+    --text-primary: #E0F2FE;
+    --text-secondary: #7DD3FC;
+    --accent-primary: #0EA5E9;
+    --accent-secondary: #38BDF8;
+    --kai-elements-bg: #0f1f24;
+    --glass-bg: rgba(15, 31, 36, 0.75);
+    --glass-border: rgba(14, 165, 233, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Summer Grain - Dark field landscape */
+  .summerGrain {
+    --bg-color: #0f0a05;
+    --text-primary: #FEF3C7;
+    --text-secondary: #FDE68A;
+    --accent-primary: #F59E0B;
+    --accent-secondary: #FBBF24;
+    --kai-elements-bg: #1a1208;
+    --glass-bg: rgba(26, 18, 8, 0.75);
+    --glass-border: rgba(245, 158, 11, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
+  }
+
+  /* Aurora Daylight - Dark aurora landscape */
+  .auroraDaylight {
+    --bg-color: #0a0f1a;
+    --text-primary: #E2E8F0;
+    --text-secondary: #94A3B8;
+    --accent-primary: #6366F1;
+    --accent-secondary: #818CF8;
+    --kai-elements-bg: #1a1f2a;
+    --glass-bg: rgba(26, 31, 42, 0.75);
+    --glass-border: rgba(99, 102, 241, 0.2);
+    --glass-shadow: rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -162,37 +333,115 @@ html::before {
   z-index: -2;
   opacity: 0;
   transition: opacity 1s ease-in-out;
-  background-size: 300% 300%;
-  animation: gradient-animation 25s ease infinite;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-@keyframes gradient-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Galaxy & Space Themes */
+html.midnightAurora::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1920&q=80');
+  background-blend-mode: overlay;
+}
+html.nebulaVeil::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.deepSpace::before { 
+  opacity: 0.6; 
+  background-image: url('https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=1920&q=80');
+  background-blend-mode: screen;
+}
+html.starfieldGlass::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1465101162946-4377e57745c3?w=1920&q=80');
+  background-blend-mode: overlay;
+}
+html.galaxyDust::before { 
+  opacity: 0.6; 
+  background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.cometTrail::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&q=80');
+  background-blend-mode: screen;
+}
+html.voidGradient::before { 
+  opacity: 0.6; 
+  background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.eventHorizon::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1446776653964-20c1d3a81b06?w=1920&q=80');
+  background-blend-mode: overlay;
 }
 
-html.midnightAurora::before { opacity: 1; background-image: linear-gradient(-45deg, #0d1117, #010409, #2c3e50, #34495e, #0d1117); }
-html.nebulaVeil::before { opacity: 1; background-image: linear-gradient(-45deg, #191122, #4a235a, #8e44ad, #2c3e50, #191122); }
-html.deepSpace::before { opacity: 1; background-image: radial-gradient(circle at top right, #00A9FF, #000000 50%); animation-duration: 35s; }
-html.solarEclipse::before { opacity: 1; background-image: radial-gradient(circle at 50% 50%, #FBBF24, #F97316, #1F2937 70%); animation-duration: 20s; }
-html.eventHorizon::before { opacity: 1; background-image: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%); }
-html.lunarSurface::before { opacity: 1; background-image: linear-gradient(45deg, #374151, #4B5563, #6B7280); }
-html.starfieldGlass::before { opacity: 1; background-image: linear-gradient(-45deg, #020617, #1e293b, #334155, #020617); }
-html.galaxyDust::before { opacity: 1; background-image: linear-gradient(to right, #434343 0%, black 100%); }
-html.cometTrail::before { opacity: 1; background-image: linear-gradient(-225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%); animation-duration: 20s;}
-html.voidGradient::before { opacity: 1; background-image: linear-gradient(to top, #09203f 0%, #537895 100%); }
-
-html.skywash::before { opacity: 1; background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); animation-duration: 20s; }
-html.sunriseMeadow::before { opacity: 1; background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%); animation-duration: 30s; }
-html.citrusPop::before { opacity: 1; background-image: linear-gradient(to right, #FBBF24, #F59E0B); }
-html.coralBloom::before { opacity: 1; background-image: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%); }
-html.pastelField::before { opacity: 1; background-image: linear-gradient(to top, #5ee7df 0%, #b490ca 100%); }
-html.canyonGlow::before { opacity: 1; background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
-html.auroraDaylight::before { opacity: 1; background-image: linear-gradient(-225deg, #A8B2C5 0%, #616D7F 100%); }
-html.tropicalInk::before { opacity: 1; background-image: linear-gradient(60deg, #29323c 0%, #485563 100%); }
-html.coastalBreeze::before { opacity: 1; background-image: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%); }
-html.summerGrain::before { opacity: 1; background-image: linear-gradient(to top, #d5dee7 0%, #ffafbd 0%, #c9ffbf 100%); animation-duration: 20s;}
+/* Landscape Themes - Dark versions */
+html.solarEclipse::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.lunarSurface::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1920&q=80');
+  background-blend-mode: overlay;
+}
+html.skywash::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.sunriseMeadow::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.citrusPop::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.coralBloom::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.pastelField::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1920&q=80');
+  background-blend-mode: overlay;
+}
+html.canyonGlow::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.auroraDaylight::before { 
+  opacity: 0.5; 
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
+  background-blend-mode: overlay;
+}
+html.tropicalInk::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.coastalBreeze::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1920&q=80');
+  background-blend-mode: multiply;
+}
+html.summerGrain::before { 
+  opacity: 0.4; 
+  background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80');
+  background-blend-mode: multiply;
+}
 
 
 /* --- UI COMPONENTS --- */
@@ -227,6 +476,29 @@ html.summerGrain::before { opacity: 1; background-image: linear-gradient(to top,
   transform: translateY(-2px) scale(1.005);
   border-color: var(--accent-primary);
   box-shadow: 0 12px 35px 0 rgba(99, 102, 241, 0.15);
+}
+
+.glass-panel-kai {
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel-kai::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: var(--noise-opacity);
+  pointer-events: none;
+  animation: grain 8s steps(10, end) infinite;
 }
 
 .arkai-logo {

@@ -10,13 +10,8 @@ export const ThemeProvider = ({ children }) => {
       return savedTheme;
     }
 
-    // Automatic Dark Mode Logic
-    const currentHour = new Date().getHours();
-    if (currentHour >= 19 || currentHour < 6) { // After 7 PM or before 6 AM
-      return 'midnightAurora';
-    }
-    
-    return 'skywash'; // Default day theme
+    // Default to dark theme
+    return 'midnightAurora';
   });
 
   useEffect(() => {

@@ -90,7 +90,7 @@ const IntroVideo = ({ onComplete }) => {
               autoPlay
               preload="auto"
             >
-              <source src="https://i.imgur.com/rnu26C2.mp4" type="video/mp4" />
+              <source src="https://i.imgur.com/Zvw1USv.mp4" type="video/mp4" />
               Tu navegador no soporta el elemento de video.
             </video>
             
