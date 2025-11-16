@@ -5,14 +5,31 @@
 // Copia TODO este código y pégalo en Supabase
 
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// Configurar CORS - Permitir dominio de Vercel y dominio personalizado
+const allowedOrigins = [
+  'https://arkailxp.vercel.app',
+  'https://www.arkailxp.vercel.app',
+  'https://j-irizarry.info',
+  'https://www.j-irizarry.info',
+  'http://localhost:5173', // Desarrollo local
+  'http://localhost:3000', // Desarrollo local alternativo
+]
+
+const getCorsHeaders = (origin) => {
+  const allowedOrigin = allowedOrigins.includes(origin || '') ? origin : allowedOrigins[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin || '*',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Credentials': 'true',
+  }
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -20,8 +37,6 @@ serve(async (req) => {
 
   try {
     // Obtener variables de entorno
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     const geminiApiKey = Deno.env.get('GEMINI_API_KEY') ?? ''
     const openaiApiKey = Deno.env.get('OPENAI_API_KEY') ?? ''
     const claudeApiKey = Deno.env.get('CLAUDE_API_KEY') ?? ''
@@ -115,7 +130,7 @@ Genera preguntas educativas, claras y relevantes basadas en el contenido proporc
       console.warn(`Advertencia: Se esperaban ${quizLength} preguntas, pero se generaron ${quizData.questions.length}`)
     }
 
-    // Retornar respuesta exitosa
+    // Retornar respuesta exitosa con CORS
     return new Response(
       JSON.stringify({
         success: true,
@@ -126,7 +141,7 @@ Genera preguntas educativas, claras y relevantes basadas en el contenido proporc
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
-      },
+      }
     )
 
   } catch (error) {
@@ -139,18 +154,20 @@ Genera preguntas educativas, claras y relevantes basadas en el contenido proporc
       {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      },
+      }
     )
   }
 })
 
 // Función para llamar a Gemini API con Structured Output (JSON Schema)
-async function callGeminiAPI(apiKey: string, prompt: string, quizLength: number) {
-  // Usar gemini-1.5-flash para mejor rendimiento y soporte de structured output
-  // Alternativa: gemini-2.0-flash-exp si está disponible en tu región
-  const model = 'gemini-1.5-flash'
+async function callGeminiAPI(apiKey, prompt, quizLength) {
+  // Usar gemini-2.0-flash-exp (o gemini-2.0-flash-lite si prefieres más velocidad)
+  // Modelo más reciente con mejor soporte para structured output y generación de contenido educativo
+  // gemini-2.0-flash-exp: Mejor calidad, un poco más lento
+  // gemini-2.0-flash-lite: Más rápido, buena calidad
+  const model = 'gemini-2.0-flash-exp' // Cambia a 'gemini-2.0-flash-lite' si prefieres velocidad
   const temperature = 0.7
-  const maxTokens = 4000
+  const maxTokens = 8000 // Aumentado para quizzes más largos y complejos
 
   // Definir el JSON Schema para la estructura del quiz
   const responseSchema = {
