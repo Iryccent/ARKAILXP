@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Zap, Image as ImageIcon, Sparkles, Brain, ChevronDown, ChevronUp } from 'lucide-react';
+import { MessageSquare, Zap, Image as ImageIcon, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import KaiChatWindow from '@/components/kai/KaiChatWindow';
 import { useToast } from '@/components/ui/use-toast';
 import { supabase } from '@/lib/supabaseClient';
@@ -24,12 +24,12 @@ const KaiCompanion = () => {
   }, []);
 
   // ================= MENU CONFIG =================
-  // Botones posicionados en círculo alrededor de KAI
+  // Botones posicionados en círculo alrededor de KAI con colores espaciales
   const menuItems = [
-    { id: 'chat', icon: MessageSquare, label: 'Chat', angle: 0 },      // Top
-    { id: 'image', icon: ImageIcon, label: 'Image', angle: 90 },      // Right
-    { id: 'quiz', icon: Brain, label: 'Quiz', angle: 180 },           // Bottom
-    { id: 'quick_action', icon: Zap, label: 'Action', angle: 270 },   // Left
+    { id: 'chat', icon: MessageSquare, label: 'Chat', angle: 0, color: 'from-cyan-500/80 to-blue-500/80' },      // Top - Cyan/Blue
+    { id: 'image', icon: ImageIcon, label: 'Image', angle: 90, color: 'from-purple-500/80 to-pink-500/80' },      // Right - Purple/Pink
+    { id: 'quiz', icon: Brain, label: 'Quiz', angle: 180, color: 'from-indigo-500/80 to-violet-500/80' },           // Bottom - Indigo/Violet
+    { id: 'quick_action', icon: Zap, label: 'Action', angle: 270, color: 'from-blue-500/80 to-cyan-500/80' },   // Left - Blue/Cyan
   ];
 
   // ================= HANDLER =================
@@ -194,7 +194,7 @@ const KaiCompanion = () => {
                       animate="visible"
                       exit="hidden"
                       onClick={() => handleMenuClick(item.id)}
-                      className="absolute group w-14 h-14 rounded-full glass-panel flex items-center justify-center hover:bg-accent-primary/50 hover:scale-110 transition-all duration-300 shadow-lg"
+                      className={`absolute group w-14 h-14 rounded-full bg-gradient-to-br ${item.color} backdrop-blur-md border border-white/20 flex items-center justify-center hover:scale-110 transition-all duration-300 shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:shadow-[0_0_30px_rgba(6,182,212,0.6)]`}
                       style={{
                         left: `calc(50% + ${pos.x}px)`,
                         top: `calc(50% + ${pos.y}px)`,
@@ -202,7 +202,7 @@ const KaiCompanion = () => {
                       }}
                       title={item.label}
                     >
-                      <item.icon className="h-6 w-6 text-text-primary" />
+                      <item.icon className="h-6 w-6 text-white drop-shadow-lg" />
                     </motion.button>
                   );
                 })}
@@ -210,7 +210,7 @@ const KaiCompanion = () => {
             )}
           </AnimatePresence>
 
-          {/* Esfera tecnológica con KAI */}
+          {/* Plataforma espacial con KAI */}
           <motion.div
             variants={sphereVariants}
             initial="initial"
@@ -218,24 +218,27 @@ const KaiCompanion = () => {
             className="relative w-32 h-32 cursor-pointer"
             onClick={() => setIsChatOpen(true)}
           >
-            {/* Esfera exterior con efecto tecnológico */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-accent-primary/20 via-accent-secondary/10 to-transparent backdrop-blur-sm border-2 border-accent-primary/30 shadow-2xl" />
+            {/* Plataforma base espacial con efecto de energía */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-500/10 via-blue-500/10 via-purple-500/10 to-indigo-500/10 backdrop-blur-md border-2 border-cyan-400/40 shadow-[0_0_30px_rgba(6,182,212,0.3),0_0_60px_rgba(59,130,246,0.2)]" />
             
-            {/* Anillos concéntricos animados */}
+            {/* Anillos de energía concéntricos animados */}
             <motion.div
-              className="absolute inset-0 rounded-full border border-accent-primary/20"
+              className="absolute inset-0 rounded-full border-2 border-cyan-400/30"
               animate={animationComplete ? {} : {
                 scale: [1, 1.2, 1],
-                opacity: [0.5, 0.8, 0.5],
+                opacity: [0.4, 0.7, 0.4],
               }}
               transition={{
                 duration: 2,
                 repeat: 6,
                 ease: 'easeInOut',
               }}
+              style={{
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.4), inset 0 0 20px rgba(6, 182, 212, 0.2)'
+              }}
             />
             <motion.div
-              className="absolute inset-2 rounded-full border border-accent-secondary/20"
+              className="absolute inset-2 rounded-full border border-blue-400/25"
               animate={animationComplete ? {} : {
                 scale: [1, 1.15, 1],
                 opacity: [0.3, 0.6, 0.3],
@@ -246,10 +249,26 @@ const KaiCompanion = () => {
                 ease: 'easeInOut',
                 delay: 0.3,
               }}
+              style={{
+                boxShadow: '0 0 15px rgba(59, 130, 246, 0.3)'
+              }}
+            />
+            <motion.div
+              className="absolute inset-3 rounded-full border border-purple-400/20"
+              animate={animationComplete ? {} : {
+                scale: [1, 1.1, 1],
+                opacity: [0.2, 0.5, 0.2],
+              }}
+              transition={{
+                duration: 2,
+                repeat: 6,
+                ease: 'easeInOut',
+                delay: 0.6,
+              }}
             />
 
-            {/* Video de KAI centrado, sin distorsión */}
-            <div className="absolute inset-4 rounded-full overflow-hidden bg-black/20">
+            {/* Video de KAI centrado, sin distorsión - imagen original */}
+            <div className="absolute inset-4 rounded-full overflow-hidden bg-gradient-to-br from-cyan-900/30 to-purple-900/30 backdrop-blur-sm">
               <video
                 src="https://i.imgur.com/MwJEV84.mp4"
                 autoPlay
@@ -260,9 +279,13 @@ const KaiCompanion = () => {
               />
             </div>
 
-            {/* Partículas flotantes */}
-            <Sparkles className="absolute -top-1 -right-1 text-yellow-300/80 w-5 h-5 animate-pulse" />
-            <Sparkles className="absolute -bottom-1 -left-1 text-accent-primary/60 w-4 h-4 animate-pulse" style={{ animationDelay: '0.5s' }} />
+            {/* Efectos de energía en los bordes */}
+            <div 
+              className="absolute inset-0 rounded-full opacity-50"
+              style={{
+                background: 'radial-gradient(circle, transparent 0%, transparent 60%, rgba(6, 182, 212, 0.1) 100%)'
+              }}
+            />
           </motion.div>
 
           {/* Botón para minimizar */}

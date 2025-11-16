@@ -160,12 +160,21 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
             <div className="flex items-center justify-between p-4 border-b border-glass-border">
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <img src="https://i.imgur.com/q0OEIZ7.gif" alt="KAI GIF" className="w-12 h-12 rounded-full" />
-                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-green-400 ring-2 ring-background"></span>
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border-2 border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                            <video
+                                src="https://i.imgur.com/MwJEV84.mp4"
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
+                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-cyan-400 ring-2 ring-background shadow-[0_0_8px_rgba(6,182,212,0.8)]"></span>
                     </div>
                     <div>
                         <h3 className="text-lg font-bold text-text-primary">KAI AI Companion</h3>
-                        <p className="text-xs text-green-400">Online</p>
+                        <p className="text-xs text-cyan-400">Online</p>
                     </div>
                 </div>
                 <Button variant="ghost" size="icon" onClick={onClose} className="text-text-secondary hover:text-text-primary">
