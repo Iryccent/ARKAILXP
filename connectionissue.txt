@@ -1,0 +1,87 @@
+Resumen de los problemas que aparecen en los logs
+"Unrecognized origin: 'self'." → CORS: el servidor rechazó el Origin enviado por el navegador (valor inválido 'self'). Probablemente tu frontend envía un header Origin no esperado o la función valida mal orígenes.
+"Variables VITE_SUPABASE_* no detectadas. Usando valores de fallback." → El cliente no tiene configuradas las variables de entorno (URL/KEY). El front está usando valores por defecto; puede apuntar al sitio equivocado o no tener la ANON_KEY correcta.
+404 y 401 al endpoint /api/horizons-backend/... → Requests a un proxy o API externa fallaron (ruta no encontrada o sin autorización).
+Mensajes React/DOM warnings (prop inválida) no críticos pero limpiarás más tarde.
+Error de listener asíncrono → extensión o script del hostinger preview puede interferir (no relevante aún).*_
+Conclusión: la app está intentando llamar a endpoints que fallan por CORS, rutas incorrectas o claves faltantes. No se puede saber aún si llama a Gemini directamente o a una Edge Function sin ver dónde están las llamadas en el código: te indico cómo localizarlo.
+
+Cómo saber si la app llama a una Edge Function de Supabase o directamente a Gemini/OpenAI (pasos para no programador)
+Busca en el código del frontend llamadas fetch/axios/supabase.functions.invoke
+
+Abre tu proyecto en el editor de Hostinger o donde tengas los archivos.
+Haz una búsqueda por estos términos (puedes usar el buscador del editor):
+"functions/v1"
+"supabase.functions"
+"fetch("
+"openai" / "gemini" / "google" / "ai" / "model"
+Si ves algo que apunta a "https://.supabase.co/functions/v1/..." → está llamando a una Edge Function de Supabase.
+Si ves llamadas directas a "api.openai.com" o "generativeai.googleapis.com" o a dominios de Gemini → está llamando directamente al proveedor.
+Archivos típicos donde suele estar la integración (donde buscar primero)
+
+src/lib/supabaseClient.js o src/utils/supabaseClient.* (si usas supabase-js)
+src/services/ai.js, src/api/ai.js, src/lib/api.js
+src/components/BlockView.jsx, src/pages/CourseView.jsx (donde aparece el botón "Preguntar" o "Generar Quiz")
+carpeta serverless/ o functions/ si el proyecto ya tiene backends
+Si no sabes cómo buscar, pega aquí el árbol (lista) de los archivos principales (como pedí antes). Con ese árbol yo te digo exactamente qué archivo abrir y qué líneas revisar.*
+
+Qué corregir ahora mismo — pasos concretos (ordenados)
+Reemplazar 'self' en orígenes
+
+El mensaje "Unrecognized origin: 'self'." indica que tu función (o proxy) o alguna librería espera Origins concretos. En el servidor/Edge Function no pongas 'self' como origin; usa el dominio real (ej. https://a9c2a631-d5b0-449a-aff8-fa0e9410f19c.dev28.app-preview.com) o '*' temporalmente en desarrollo.
+Si no sabes dónde está ese control, probablemente esté en la Edge Function que hace proxy a Gemini o en un middleware del host (Hostinger). Necesito ver el código del backend o la función.
+Configurar variables VITE_SUPABASE_* en Hostinger
+
+La app muestra que no detectó VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY. Debes configurar esas variables de entorno en el panel de Hostinger (o en .env en el build) para que el cliente use la URL y la ANON key correctas.
+Si no las tienes, copia desde el Dashboard de Supabase: Settings → API → Project URL y Anon Key.
+Asegurar que las llamadas al AI van por una Edge Function (no por frontend)
+
+Nunca pongas la GEMINI/OPENAI key en el cliente. Debe enviarse la petición al endpoint que tú despliegues (Edge Function). El frontend hace POST a /functions/v1/ai_chat y la función usa Deno.env.get('GEMINI_API_KEY').
+Si actualmente ves requests a dominios de Gemini o OpenAI en la pestaña Network, eso confirma llamadas directas: notifícamelo y te doy la solución para proxyarlas.
+CORS: hacer que la función responda OPTIONS y devuelva Access-Control-Allow-Origin
+
+La Edge Function debe incluir manejo OPTIONS y devolver:
+Access-Control-Allow-Origin: (o '*')
+Access-Control-Allow-Headers: authorization, apikey, content-type
+Access-Control-Allow-Methods: POST, OPTIONS
+También incluir estas cabeceras en la respuesta final.
+Revisar 404/401 en /api/horizons-backend/...
+
+Esa ruta parece ser una API del preview de Hostinger (sandbox). Un 404 significa que el recurso no existe en el host. 401 significa falta de autenticación (posible token faltante).
+Identifica en qué parte del frontend se llama a esa ruta (usar búsqueda) y decide si debe apuntar a la Edge Function en Supabase en su lugar.*_
+¿Quieres que haga esto por ti? Propongo acciones concretas que puedo generar ahora
+Elige entre estas opciones y yo te doy los artefactos listos o los reviso:
+
+Te genero una Edge Function lista (TypeScript/Deno) que:
+
+Recibe POST { block_id, message } desde el frontend,
+Maneja CORS (incluye OPTIONS),
+Usa el secreto GEMINI_API_KEY desde los Secrets de Supabase,
+Llama a Gemini (ejemplo de fetch) y devuelve la respuesta JSON,
+Persiste la interacción en la tabla events (si quieres). (Necesito confirmar si usar Supabase.ai o Gemini directo; y el nombre del secret que quieres.)
+Te doy el snippet frontend (React) listo para invocar la función con fetch, incluyendo:
+
+Cabeceras Authorization: Bearer <anon_key> (o apikey),
+Manejo de errores y preflight,
+Ejemplo de llamada y cómo desplegar en Hostinger.
+Te daré instrucciones exactas paso a paso para configurar:
+
+Las variables VITE_SUPABASE_* en Hostinger (qué valores y dónde pegarlos).
+Cómo añadir el secret GEMINI_API_KEY en Supabase (Dashboard → Functions → Secrets) con el nombre que elijas.
+Cómo permitir origin en CORS (si quieres lo podemos poner a '*' temporalmente para pruebas).
+Diagnóstico remoto guiado:
+
+Me das el árbol de archivos (o pegas los archivos relevantes: src/lib/supabaseClient.js y el componente que dispara la petición AI). Yo te indico exactamente qué líneas cambiar y te doy el código listo a pegar._
+Recomendación inmediata (lo mínimo para que "la magia" funcione en tu app de Hostinger)
+Crear/proveer una Edge Function que haga proxy a Gemini y maneje CORS. (Si ya hiciste pruebas en el SQL editor, esas llamadas no usan CORS porque se ejecutan en servidor; desde el navegador sí requieren CORS.)
+Configurar VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en Hostinger antes de desplegar/compilar el frontend.
+Verificar en el Network tab de Chrome la URL exacta a la que se hace la petición y copiar el request+response (o screenshot) para diagnosticar errores 401/404/CORS.
+Dime ya:
+
+¿Quieres que te genere la Edge Function + snippet frontend + pasos para secrets y variables en Hostinger? (Recomendado: Sí)
+¿Usas Gemini vía Google (generative AI) o prefieres Supabase.ai / OpenAI? (Necesario para el ejemplo de llamada)
+Pega aquí (o sube) los archivos: src/lib/supabaseClient.js y el componente que hace la llamada AI (ej. src/components/BlockView.jsx). Si no sabes dónde están, mándame el árbol de archivos y yo los localizo.
+Con esa información te doy el código listo y la guía precisa para desplegar en Supabase y en Hostinger — y solucionamos el "no se traslada la magia" en una sola iteración.
+
+
+

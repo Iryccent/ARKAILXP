@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* --- FONT IMPORTS --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Rajdhani:wght@300;500;700&display=swap');
+
+/* --- BASE & THEME SETUP --- */
+@layer base {
+  :root {
+    --radius: 1.125rem; /* 18px */
+    
+    /* Default Dark Theme: Midnight Aurora */
+    --bg-color: #0D1117;
+    --text-primary: #E6EDF3;
+    --text-secondary: #7D8590;
+    --accent-primary: #6366F1;
+    --accent-secondary: #818CF8;
+    --kai-elements-bg: #161B22;
+    --glass-bg: rgba(28, 33, 40, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(0, 0, 0, 0.2);
+    --noise-opacity: 0.03;
+  }
+
+  /* --- DYNAMIC THEME STYLES --- */
+
+  /* --- Light Themes --- */
+  .skywash {
+    --bg-color: #f0f9ff;
+    --text-primary: #0c4a6e;
+    --text-secondary: #38bdf8;
+    --accent-primary: #3b82f6;
+    --accent-secondary: #60a5fa;
+    --kai-elements-bg: #e0f2fe;
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(0, 0, 0, 0.1);
+  }
+
+  .sunriseMeadow {
+    --bg-color: #FEFCE8;
+    --text-primary: #713F12;
+    --text-secondary: #A16207;
+    --accent-primary: #F59E0B;
+    --accent-secondary: #FBBF24;
+    --glass-bg: rgba(254, 252, 232, 0.5);
+    --glass-border: rgba(113, 63, 18, 0.2);
+  }
+  
+  .citrusPop {
+    --bg-color: #FFFBEB;
+    --text-primary: #D97706;
+    --text-secondary: #F59E0B;
+    --accent-primary: #FBBF24;
+  }
+  
+  .coralBloom {
+    --bg-color: #FFF1F2;
+    --text-primary: #DB2777;
+    --text-secondary: #F472B6;
+    --accent-primary: #EC4899;
+  }
+  
+  .pastelField {
+    --bg-color: #F0FDF4;
+    --text-primary: #166534;
+    --text-secondary: #4ADE80;
+    --accent-primary: #22C55E;
+  }
+  
+  .canyonGlow {
+    --bg-color: #FFF7ED;
+    --text-primary: #C2410C;
+    --text-secondary: #FB923C;
+    --accent-primary: #F97316;
+  }
+
+  /* --- Dark Themes --- */
+  .deepSpace {
+    --bg-color: #000000;
+    --text-primary: #EAEAEA;
+    --text-secondary: #A0A0A0;
+    --accent-primary: #00A9FF;
+    --accent-secondary: #89CFF0;
+    --glass-bg: rgba(10, 10, 10, 0.5);
+  }
+
+  .nebulaVeil {
+    --bg-color: #191122;
+    --text-primary: #E8D5B5;
+    --text-secondary: #B4A284;
+    --accent-primary: #D946EF;
+    --accent-secondary: #E879F9;
+    --glass-bg: rgba(25, 17, 34, 0.6);
+  }
+
+  .solarEclipse {
+    --bg-color: #1F2937;
+    --text-primary: #FBBF24;
+    --text-secondary: #F87171;
+    --accent-primary: #F97316;
+  }
+
+  .eventHorizon {
+    --bg-color: #1E1B4B;
+    --text-primary: #A5B4FC;
+    --text-secondary: #C7D2FE;
+    --accent-primary: #818CF8;
+  }
+
+  .lunarSurface {
+    --bg-color: #374151;
+    --text-primary: #D1D5DB;
+    --text-secondary: #9CA3AF;
+    --accent-primary: #E5E7EB;
+  }
+}
+
+/* --- GENERAL STYLING --- */
+@layer base {
+  * {
+    @apply border-border;
+    border-color: var(--glass-border);
+  }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--bg-color);
+    transition: background-color 0.5s ease;
+  }
+  body {
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    overflow: hidden;
+    position: relative;
+    min-height: 100vh;
+    background: transparent;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+  }
+}
+
+/* --- DYNAMIC BACKGROUNDS --- */
+html::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: -2;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  background-size: 300% 300%;
+  animation: gradient-animation 25s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+html.midnightAurora::before { opacity: 1; background-image: linear-gradient(-45deg, #0d1117, #010409, #2c3e50, #34495e, #0d1117); }
+html.nebulaVeil::before { opacity: 1; background-image: linear-gradient(-45deg, #191122, #4a235a, #8e44ad, #2c3e50, #191122); }
+html.deepSpace::before { opacity: 1; background-image: radial-gradient(circle at top right, #00A9FF, #000000 50%); animation-duration: 35s; }
+html.solarEclipse::before { opacity: 1; background-image: radial-gradient(circle at 50% 50%, #FBBF24, #F97316, #1F2937 70%); animation-duration: 20s; }
+html.eventHorizon::before { opacity: 1; background-image: linear-gradient(135deg, #1E1B4B 0%, #312E81 50%, #4338CA 100%); }
+html.lunarSurface::before { opacity: 1; background-image: linear-gradient(45deg, #374151, #4B5563, #6B7280); }
+html.starfieldGlass::before { opacity: 1; background-image: linear-gradient(-45deg, #020617, #1e293b, #334155, #020617); }
+html.galaxyDust::before { opacity: 1; background-image: linear-gradient(to right, #434343 0%, black 100%); }
+html.cometTrail::before { opacity: 1; background-image: linear-gradient(-225deg, #FF3CAC 0%, #784BA0 50%, #2B86C5 100%); animation-duration: 20s;}
+html.voidGradient::before { opacity: 1; background-image: linear-gradient(to top, #09203f 0%, #537895 100%); }
+
+html.skywash::before { opacity: 1; background-image: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%); animation-duration: 20s; }
+html.sunriseMeadow::before { opacity: 1; background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%); animation-duration: 30s; }
+html.citrusPop::before { opacity: 1; background-image: linear-gradient(to right, #FBBF24, #F59E0B); }
+html.coralBloom::before { opacity: 1; background-image: linear-gradient(120deg, #fbc2eb 0%, #a6c1ee 100%); }
+html.pastelField::before { opacity: 1; background-image: linear-gradient(to top, #5ee7df 0%, #b490ca 100%); }
+html.canyonGlow::before { opacity: 1; background-image: linear-gradient(to top, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); }
+html.auroraDaylight::before { opacity: 1; background-image: linear-gradient(-225deg, #A8B2C5 0%, #616D7F 100%); }
+html.tropicalInk::before { opacity: 1; background-image: linear-gradient(60deg, #29323c 0%, #485563 100%); }
+html.coastalBreeze::before { opacity: 1; background-image: linear-gradient(to top, #c1dfc4 0%, #deecdd 100%); }
+html.summerGrain::before { opacity: 1; background-image: linear-gradient(to top, #d5dee7 0%, #ffafbd 0%, #c9ffbf 100%); animation-duration: 20s;}
+
+
+/* --- UI COMPONENTS --- */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 32px 0 var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-panel::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: var(--noise-opacity);
+    pointer-events: none;
+    animation: grain 8s steps(10, end) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform:translate(0, 0) } 10% { transform:translate(-5%, -10%) } 20% { transform:translate(-15%, 5%) } 30% { transform:translate(7%, -25%) } 40% { transform:translate(-5%, 25%) } 50% { transform:translate(-15%, 10%) } 60% { transform:translate(15%, 0%) } 70% { transform:translate(0%, 15%) } 80% { transform:translate(3%, 35%) } 90% { transform:translate(-10%, 10%) }
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px) scale(1.005);
+  border-color: var(--accent-primary);
+  box-shadow: 0 12px 35px 0 rgba(99, 102, 241, 0.15);
+}
+
+.arkai-logo {
+  font-family: 'Rajdhani', sans-serif;
+  color: var(--text-primary);
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+
+/* Custom prose styles for 'marked.js' output */
+.prose { color: var(--text-primary); }
+.prose p, .prose ul, .prose ol { color: var(--text-primary); }
+.prose a { color: var(--accent-secondary); }
+.prose strong { color: var(--text-primary); font-weight: 600; }
+.prose code {
+    color: var(--text-secondary);
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 2px 4px;
+    border-radius: 4px;
+}

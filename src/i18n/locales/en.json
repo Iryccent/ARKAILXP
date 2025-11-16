@@ -1,0 +1,130 @@
+{
+  "gate": {
+    "title": "ARKAI LXP",
+    "subtitle": "The learning platform that evolves with you.",
+    "guestMember": "Guest (Member)",
+    "guestAdmin": "Guest (Admin)"
+  },
+  "sidebar": {
+    "menu": "Menu",
+    "dashboard": "Dashboard",
+    "courses": "Courses",
+    "sandbox": "Sandbox",
+    "admin": "Admin",
+    "profile": "Profile",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}!",
+    "welcome_subtitle": "Let's continue building the future.",
+    "myCourses": "My Courses in Progress",
+    "addCourse": "Add Course",
+    "upcomingDeadlines": "Upcoming Deadlines",
+    "noDeadlines": "No pending deadlines.",
+    "due": "Due: {{date}}",
+    "adminWidget": {
+      "title": "Admin Panel",
+      "activeUsers": "Active Users",
+      "teamProgress": "Team Progress"
+    }
+  },
+  "calendar": {
+    "weekdays": {
+      "mo": "MO",
+      "tu": "TU",
+      "we": "WE",
+      "th": "TH",
+      "fr": "FR",
+      "sa": "SA",
+      "su": "SU"
+    }
+  },
+  "preferences": {
+    "theme": "Theme"
+  },
+  "course": {
+    "loading": "Loading course...",
+    "title": "Module 1: AI Fundamentals",
+    "lessonTitle": "The Art of the Prompt: Instruction is Key",
+    "lessonContent1": "When to use the Role+Task+Context structure: It's the best option for creative tasks or those needing a special point of view. For example: \"Act as a screenwriter (Role), write a two-page scene (Task) where two detectives discover a key clue in an ancient library (Context)\".",
+    "lessonContent2": "When to use a direct question: To search for data or facts, a simple and direct question is faster and more efficient. A well-designed prompt is the difference between a generic answer and a brilliant solution.",
+    "lesson": "Lesson {{current}} of {{total}}",
+    "startQuiz": "Start Quiz",
+    "nextQuestion": "Next Question",
+    "finishQuiz": "Finish Quiz",
+    "quizTitle": "Checkpoint",
+    "question": "Question 1/3: What is the best prompt structure for a creative task?",
+    "quizOptionA": "A) Direct question",
+    "quizOptionB": "B) Role + Task + Context",
+    "quizOptionC": "C) List of keywords",
+    "quizOptionD": "D) A single word",
+    "submitAnswer": "Confirm",
+    "quizComplete": {
+      "excellent": "Excellent work!",
+      "practice": "Keep practicing",
+      "score": "Your score: {{score}}%",
+      "summary": "You answered {{correct}} out of {{total}} questions correctly."
+    },
+    "aiTutor": {
+      "title": "AI Tutor",
+      "greeting": "Hello! I am your AI tutor. Ask me anything about this lesson.",
+      "placeholder": "Ask for an analogy..."
+    }
+  },
+  "admin": {
+    "title": "Admin Panel",
+    "manageUsers": "Manage Users",
+    "manageUsersDesc": "Add, remove, or edit users and their roles.",
+    "createContent": "Create Content",
+    "createContentDesc": "Generate new courses, lessons and quizzes with AI.",
+    "assignCourses": "Assign Courses",
+    "assignCoursesDesc": "Assign courses to users or teams.",
+    "viewAnalytics": "View Analytics",
+    "viewAnalyticsDesc": "Review team progress and performance."
+  },
+  "quizBuilder": {
+    "title": "Autonomous Quiz Generator",
+    "infoPanelTitle": "1. Paste Your Information Block Here",
+    "infoPanelPlaceholder": "Paste the course content, an article, meeting notes here...",
+    "configPanelTitle": "2. Configure Quiz Parameters",
+    "lengthLabel": "Length (# of Questions)",
+    "lengthOpt1": "20 Questions (Standard)",
+    "lengthOpt2": "40 Questions (Extended)",
+    "lengthOpt3": "60 Questions (Full)",
+    "complexityLabel": "Complexity",
+    "complexityOpt1": "Basic",
+    "complexityOpt2": "Intermediate",
+    "complexityOpt3": "Advanced",
+    "instructionsLabel": "Special Instructions for Gemini",
+    "instructionsPlaceholder": "Ex: 'Focus on the key concepts mentioned in the last paragraph' or 'Create true/false type questions'.",
+    "generateButton": "Generate Quiz"
+  },
+  "profile": {
+    "title": "User Profile",
+    "roleAdmin": "Administrator",
+    "roleMember": "Team Member",
+    "additionalInfo": "Additional Information",
+    "additionalInfoDesc": "The form to edit profile information will be implemented here.",
+    "saveButton": "Save Changes"
+  },
+  "sandbox": {
+    "title": "AI Sandbox",
+    "subtitle": "Your space for content experimentation and creation.",
+    "generatorTitle": "Content Generator",
+    "generatorDesc": "Soon you will be able to generate text, images, and more with the power of Gemini."
+  },
+  "toasts": {
+    "notImplemented": {
+      "title": "🚧 This feature isn't implemented yet!",
+      "description": "But don't worry! You can request it in your next prompt! 🚀"
+    },
+    "themeChanged": {
+      "title": "Theme changed to {{theme}}",
+      "description": "Enjoy the new look!"
+    },
+    "langChanged": {
+      "title": "Language changed to {{lang}}",
+      "description": "Enjoy the app in your preferred language!"
+    }
+  }
+}

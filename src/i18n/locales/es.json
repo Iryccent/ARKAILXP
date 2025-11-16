@@ -1,0 +1,130 @@
+{
+  "gate": {
+    "title": "ARKAI LXP",
+    "subtitle": "La plataforma de aprendizaje que evoluciona contigo.",
+    "guestMember": "Invitado (Miembro)",
+    "guestAdmin": "Invitado (Admin)"
+  },
+  "sidebar": {
+    "menu": "Menú",
+    "dashboard": "Dashboard",
+    "courses": "Cursos",
+    "sandbox": "Sandbox",
+    "admin": "Admin",
+    "profile": "Perfil",
+    "logout": "Cerrar Sesión"
+  },
+  "dashboard": {
+    "welcome": "¡Bienvenido de vuelta, {{name}}!",
+    "welcome_subtitle": "Sigamos construyendo el futuro.",
+    "myCourses": "Mis Cursos en Progreso",
+    "addCourse": "Añadir Curso",
+    "upcomingDeadlines": "Próximas Entregas",
+    "noDeadlines": "No hay entregas pendientes.",
+    "due": "Entrega: {{date}}",
+    "adminWidget": {
+      "title": "Panel de Administrador",
+      "activeUsers": "Usuarios Activos",
+      "teamProgress": "Progreso del Equipo"
+    }
+  },
+  "calendar": {
+    "weekdays": {
+      "mo": "LU",
+      "tu": "MA",
+      "we": "MI",
+      "th": "JU",
+      "fr": "VI",
+      "sa": "SÁ",
+      "su": "DO"
+    }
+  },
+  "preferences": {
+    "theme": "Tema"
+  },
+  "course": {
+    "loading": "Cargando curso...",
+    "title": "Módulo 1: Fundamentos de IA",
+    "lessonTitle": "El Arte del Prompt: La Instrucción es la Clave",
+    "lessonContent1": "Cuándo usar la estructura Rol+Tarea+Contexto: Es la mejor opción para tareas creativas o que necesitan un punto de vista especial. Por ejemplo: \"Actúa como un guionista de cine (Rol), escribe una escena de dos páginas (Tarea) donde dos detectives descubren una pista clave en una biblioteca antigua (Contexto)\".",
+    "lessonContent2": "Cuándo usar una pregunta directa: Para buscar datos o hechos, una pregunta simple y directa es más rápido y eficiente. Un prompt bien diseñado es la diferencia entre una respuesta genérica y una solución brillante.",
+    "lesson": "Lección {{current}} de {{total}}",
+    "startQuiz": "Empezar Cuestionario",
+    "nextQuestion": "Siguiente Pregunta",
+    "finishQuiz": "Finalizar Cuestionario",
+    "quizTitle": "Punto de Control",
+    "question": "Pregunta 1/3: ¿Cuál es la mejor estructura de prompt para una tarea creativa?",
+    "quizOptionA": "A) Pregunta directa",
+    "quizOptionB": "B) Rol + Tarea + Contexto",
+    "quizOptionC": "C) Lista de palabras clave",
+    "quizOptionD": "D) Una sola palabra",
+    "submitAnswer": "Confirmar",
+    "quizComplete": {
+      "excellent": "¡Excelente trabajo!",
+      "practice": "Sigue practicando",
+      "score": "Tu puntuación: {{score}}%",
+      "summary": "Respondiste {{correct}} de {{total}} preguntas correctamente."
+    },
+    "aiTutor": {
+      "title": "Tutor IA",
+      "greeting": "¡Hola! Soy tu tutor de IA. Pregúntame lo que sea sobre esta lección.",
+      "placeholder": "Pide una analogía..."
+    }
+  },
+  "admin": {
+    "title": "Panel de Administrador",
+    "manageUsers": "Gestionar Usuarios",
+    "manageUsersDesc": "Añadir, eliminar o editar usuarios y sus roles.",
+    "createContent": "Crear Contenido",
+    "createContentDesc": "Generar nuevos cursos, lecciones y cuestionarios con IA.",
+    "assignCourses": "Asignar Cursos",
+    "assignCoursesDesc": "Asignar cursos a usuarios o equipos.",
+    "viewAnalytics": "Ver Analíticas",
+    "viewAnalyticsDesc": "Revisar el progreso y rendimiento del equipo."
+  },
+  "quizBuilder": {
+    "title": "Generador de Cuestionarios Autónomo",
+    "infoPanelTitle": "1. Pega tu Bloque de Información Aquí",
+    "infoPanelPlaceholder": "Pega aquí el contenido del curso, un artículo, notas de una reunión...",
+    "configPanelTitle": "2. Configura los Parámetros del Cuestionario",
+    "lengthLabel": "Longitud (Nº de Preguntas)",
+    "lengthOpt1": "20 Preguntas (Estándar)",
+    "lengthOpt2": "40 Preguntas (Extenso)",
+    "lengthOpt3": "60 Preguntas (Completo)",
+    "complexityLabel": "Complejidad",
+    "complexityOpt1": "Básico",
+    "complexityOpt2": "Intermedio",
+    "complexityOpt3": "Avanzado",
+    "instructionsLabel": "Instrucciones Especiales para Gemini",
+    "instructionsPlaceholder": "Ej: 'Enfócate en los conceptos clave mencionados en el último párrafo' o 'Crea preguntas de tipo verdadero/falso'.",
+    "generateButton": "Generar Cuestionario"
+  },
+  "profile": {
+    "title": "Perfil de Usuario",
+    "roleAdmin": "Administrador",
+    "roleMember": "Miembro del Equipo",
+    "additionalInfo": "Información Adicional",
+    "additionalInfoDesc": "El formulario para editar la información del perfil se implementará aquí.",
+    "saveButton": "Guardar Cambios"
+  },
+  "sandbox": {
+    "title": "Sandbox de IA",
+    "subtitle": "Tu espacio para la experimentación y creación de contenido.",
+    "generatorTitle": "Generador de Contenido",
+    "generatorDesc": "Pronto podrás generar texto, imágenes y más con el poder de Gemini."
+  },
+  "toasts": {
+    "notImplemented": {
+      "title": "🚧 ¡Esta función aún no está implementada!",
+      "description": "¡Pero no te preocupes! ¡Puedes solicitarla en tu próximo mensaje! 🚀"
+    },
+    "themeChanged": {
+      "title": "Tema cambiado a {{theme}}",
+      "description": "¡Disfruta del nuevo look!"
+    },
+    "langChanged": {
+      "title": "Idioma cambiado a {{lang}}",
+      "description": "¡Disfruta la app en tu idioma preferido!"
+    }
+  }
+}
