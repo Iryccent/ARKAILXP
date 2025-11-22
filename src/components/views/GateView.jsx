@@ -47,12 +47,16 @@ const GateView = () => {
         className="w-full max-w-md mx-auto"
       >
         <div className="relative z-10 text-center mb-8">
-          <motion.h1
+          <motion.div
             variants={item}
-            className="arkai-logo text-6xl md:text-7xl font-bold text-text-primary mb-4"
+            className="flex justify-center mb-4"
           >
-            ARKAI LXP
-          </motion.h1>
+            <img 
+              src="https://i.imgur.com/yzthc2y.png" 
+              alt="ARKAI Logo" 
+              className="h-20 md:h-24 w-auto object-contain"
+            />
+          </motion.div>
           <motion.p variants={item} className="text-lg text-text-secondary">
             {t('gate.subtitle')}
           </motion.p>

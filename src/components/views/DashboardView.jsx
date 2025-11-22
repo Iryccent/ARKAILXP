@@ -88,8 +88,12 @@ const DashboardView = ({
             
             {/* SIDEBAR (Glass style) */}
             <aside className="w-64 flex-shrink-0 hidden md:flex flex-col border-r border-white/10 bg-black/40 backdrop-blur-md">
-                <div className="h-20 flex items-center justify-center border-b border-white/10 opacity-80">
-                   <h1 className="text-2xl font-bold tracking-widest text-cyan-400">ARKAI</h1>
+                <div className="h-20 flex items-center justify-center border-b border-white/10 px-4">
+                   <img 
+                      src="https://i.imgur.com/yzthc2y.png" 
+                      alt="ARKAI Logo" 
+                      className="h-12 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity"
+                   />
                 </div>
                 
                 <nav className="flex-1 p-4 space-y-2">

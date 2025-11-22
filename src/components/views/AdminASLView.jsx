@@ -90,13 +90,20 @@ const AdminASLView = ({ onBack, onAddCourse, courses, members = [], setMembers }
                     <ArrowLeft size={16} /> Back to Dashboard
                 </button>
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold text-white">
-                            System Administration
-                        </h1>
-                        <p className="text-gray-400 mt-1">
-                            Configure access protocols and system content.
-                        </p>
+                    <div className="flex items-center gap-4">
+                        <img 
+                            src="https://i.imgur.com/yzthc2y.png" 
+                            alt="ARKAI Logo" 
+                            className="h-10 w-auto object-contain"
+                        />
+                        <div>
+                            <h1 className="text-3xl font-bold text-white">
+                                System Administration
+                            </h1>
+                            <p className="text-gray-400 mt-1">
+                                Configure access protocols and system content.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="flex bg-white/5 p-1 rounded-xl border border-white/10">

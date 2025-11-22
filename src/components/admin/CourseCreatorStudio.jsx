@@ -108,9 +108,14 @@ const CourseCreatorStudio = ({ isOpen, onClose, onAddCourse, embedded = false, m
             {/* Header (Only if modal) */}
             {!embedded && (
                 <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/20 rounded-t-[40px]">
-                    <div>
+                    <div className="flex items-center gap-3">
+                        <img 
+                            src="https://i.imgur.com/yzthc2y.png" 
+                            alt="ARKAI Logo" 
+                            className="h-8 w-auto object-contain"
+                        />
                         <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                            ARKAI Course Studio <span className="text-xs bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/30">AI ENABLED</span>
+                            Course Studio <span className="text-xs bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full border border-cyan-500/30">AI ENABLED</span>
                         </h2>
                     </div>
                     <button onClick={onClose} className="text-white/50 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors"><X /></button>

@@ -29,6 +29,30 @@ function App() {
   const [introCompleted, setIntroCompleted] = useState(false);
   const [members, setMembers] = useState(INITIAL_MEMBERS); // Lifted State for Admin View
 
+  // Helper function to determine if user is admin
+  const isAdmin = (user) => {
+    if (!user) return false;
+    // Check metadata first
+    if (user.user_metadata?.role === 'admin' || user.user_metadata?.role === 'Manager') return true;
+    // Hardcoded admin emails
+    const adminEmails = ['jadrielrod@gmail.com', 'jadriel@iryccent.com'];
+    return adminEmails.includes(user.email);
+  };
+
+  // Get user role with fallback
+  const getUserRole = (user) => {
+    if (!user) return 'User';
+    if (isAdmin(user)) return 'Manager';
+    return user.user_metadata?.role || 'User';
+  };
+
+  // Get ASL level with fallback
+  const getASLLevel = (user) => {
+    if (!user) return 1;
+    if (isAdmin(user)) return 4; // Admins get full access
+    return user.user_metadata?.asl || 1;
+  };
+
   const handleLogout = async () => {
     await signOut();
   };
@@ -82,9 +106,9 @@ function App() {
                         courses={[]}
                         onSelectCourse={(course) => window.location.href = `/course/${course.id}`}
                         onAddCourse={handleAddCourse}
-                        userRole={user.user_metadata?.role || 'User'}
-                        userName={user.user_metadata?.full_name || user.email}
-                        aslLevel={user.user_metadata?.asl || 1}
+                        userRole={getUserRole(user)}
+                        userName={user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                        aslLevel={getASLLevel(user)}
                         onNavigateToASL={() => window.location.href = '/admin/asl'}
                         onLogout={handleLogout}
                         totalCoursesCount={0}
@@ -96,7 +120,7 @@ function App() {
                     <Route path="/course/:courseId" element={user ? <PageWrapper><CourseView user={user} /></PageWrapper> : <Navigate to="/" />} />
 
                     {/* Legacy Admin View - Keeping for reference or fallback */}
-                    <Route path="/admin" element={user && user.user_metadata?.role === 'admin' ? <PageWrapper><AdminView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
+                    <Route path="/admin" element={user && isAdmin(user) ? <PageWrapper><AdminView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
 
                     {/* NEW Admin ASL View */}
                     <Route path="/admin/asl" element={user ? <PageWrapper>
