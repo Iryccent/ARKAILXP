@@ -160,10 +160,10 @@ Genera preguntas educativas, claras y relevantes basadas en el contenido proporc
 
 // Función para llamar a Gemini API con Structured Output (JSON Schema)
 async function callGeminiAPI(apiKey: string, prompt: string, quizLength: number) {
-  // Usar gemini-2.0-flash-exp (o gemini-2.0-flash-lite si prefieres más velocidad)
-  const model = 'gemini-2.0-flash-exp' 
+  // Usar gemini-1.5-flash para mejor rendimiento y soporte de structured output
+  const model = 'gemini-1.5-flash'
   const temperature = 0.7
-  const maxTokens = 8000 
+  const maxTokens = 8000
 
   // Definir el JSON Schema para la estructura del quiz
   const responseSchema = {

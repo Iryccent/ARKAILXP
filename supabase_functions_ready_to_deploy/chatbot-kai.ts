@@ -81,7 +81,7 @@ OUTPUT RULES
 `.trim();
 
 const GEMINI_KEY = (Deno.env.get("GEMINI_API_KEY") || "").trim();
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`;
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`;
 
 serve(async (req) => {
   // --- Manejo de CORS con la lógica interna ---
