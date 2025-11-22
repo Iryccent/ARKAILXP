@@ -12,6 +12,17 @@ const GateView = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
 
+  // BYPASS FOR TESTING
+  const handleQuickLogin = async (role) => {
+    setIsLoading(true);
+    if (role === 'admin') {
+      await signIn('jadrielrod@gmail.com', 'admin123');
+    } else {
+      await signIn('student@test.com', 'student123');
+    }
+    setIsLoading(false);
+  };
+
   const handleAuth = async (e) => {
     e.preventDefault();
     if (isLoading) return;
@@ -63,6 +74,41 @@ const GateView = () => {
         </div>
 
         <motion.div variants={item} className="glass-panel p-8">
+          {/* BYPASS BUTTONS */}
+          <div className="mb-8 p-6 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border-2 border-cyan-500/30 rounded-2xl">
+            <h3 className="text-lg font-bold text-cyan-400 mb-2 text-center">🚀 QUICK ACCESS (Testing)</h3>
+            <p className="text-xs text-gray-400 text-center mb-4">Bypass login para pruebas</p>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => handleQuickLogin('admin')}
+                disabled={isLoading}
+                className="py-4 px-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-xl font-bold text-white shadow-xl shadow-purple-900/30 transition-all disabled:opacity-50 flex flex-col items-center gap-2"
+              >
+                <span className="text-2xl">👑</span>
+                <span>ADMIN</span>
+                <span className="text-xs opacity-70">Full Access</span>
+              </button>
+              <button
+                onClick={() => handleQuickLogin('student')}
+                disabled={isLoading}
+                className="py-4 px-6 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 rounded-xl font-bold text-white shadow-xl shadow-cyan-900/30 transition-all disabled:opacity-50 flex flex-col items-center gap-2"
+              >
+                <span className="text-2xl">🎓</span>
+                <span>STUDENT</span>
+                <span className="text-xs opacity-70">Limited Access</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/10"></div>
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-text-secondary">Or use manual login</span>
+            </div>
+          </div>
+
           <h2 className="text-2xl font-bold text-center text-text-primary mb-2">
             {isSignUp ? 'Create an Account' : 'Welcome Back'}
           </h2>
