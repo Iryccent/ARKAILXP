@@ -21,7 +21,9 @@ import { useUsers } from '@/hooks/useUsers';
 function App() {
   const { user, loading, signOut } = useAuth();
   const { users, createUser, updateUser, deleteUser, getCurrentUserProfile } = useUsers();
-  const [introCompleted, setIntroCompleted] = useState(false);
+  const [introCompleted, setIntroCompleted] = useState(() => {
+    return localStorage.getItem('intro_completed') === 'true';
+  });
   const [userProfile, setUserProfile] = useState(null);
 
   // Helper function to determine if user is admin
@@ -37,6 +39,7 @@ function App() {
   // Get user role with fallback
   const getUserRole = (user) => {
     if (!user) return 'User';
+    if (userProfile) return userProfile.role;
     if (isAdmin(user)) return 'Manager';
     return user.user_metadata?.role || 'User';
   };
@@ -49,13 +52,24 @@ function App() {
     return user.user_metadata?.asl || 1;
   };
 
+  // Get user name
+  const getUserName = (user) => {
+    if (!user) return 'User';
+    if (userProfile) return userProfile.name;
+    return user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  };
+
   // Load user profile from database
   useEffect(() => {
     const loadUserProfile = async () => {
       if (user?.id) {
+        console.log('🔍 Loading profile for user:', user.email);
         const { data } = await getCurrentUserProfile(user.id);
+        console.log('👤 User profile loaded:', data);
         if (data) {
           setUserProfile(data);
+        } else {
+          console.log('⚠️ No profile found, user might need to be created in DB');
         }
       } else {
         setUserProfile(null);
@@ -64,6 +78,11 @@ function App() {
 
     loadUserProfile();
   }, [user]);
+
+  const handleIntroComplete = () => {
+    setIntroCompleted(true);
+    localStorage.setItem('intro_completed', 'true');
+  };
 
   const handleLogout = async () => {
     setUserProfile(null);
@@ -103,7 +122,7 @@ function App() {
       ) : (
         <>
           {!introCompleted && (
-            <IntroVideo onComplete={() => setIntroCompleted(true)} />
+            <IntroVideo onComplete={handleIntroComplete} />
           )}
 
           {introCompleted && (
@@ -120,7 +139,7 @@ function App() {
                         onSelectCourse={(course) => window.location.href = `/course/${course.id}`}
                         onAddCourse={handleAddCourse}
                         userRole={getUserRole(user)}
-                        userName={user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
+                        userName={getUserName(user)}
                         aslLevel={getASLLevel(user)}
                         onNavigateToASL={() => window.location.href = '/admin/asl'}
                         onLogout={handleLogout}
