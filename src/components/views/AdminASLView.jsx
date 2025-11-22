@@ -23,45 +23,39 @@ const ASLBadge = ({ level }) => {
     );
 };
 
-const AdminASLView = ({ onBack, onAddCourse, courses, members = [], onCreateUser, onUpdateUser, onDeleteUser }) => {
+const AdminASLView = ({ onBack, onAddCourse, courses, members = [], setMembers }) => {
     const [activeTab, setActiveTab] = useState('users');
 
     // User Provisioning State
     const [userView, setUserView] = useState('list');
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({ name: '', email: '', asl: 1, role: 'User' });
-    const [saving, setSaving] = useState(false);
 
-    const handleSaveUser = async () => {
+    const handleSaveUser = () => {
         if (!formData.name || !formData.email) return;
-        
-        setSaving(true);
-        try {
-            if (editingId) {
-                await onUpdateUser(editingId, formData);
-            } else {
-                await onCreateUser(formData);
-            }
-            setUserView('list');
-            setEditingId(null);
-            setFormData({ name: '', email: '', asl: 1, role: 'User' });
-        } catch (error) {
-            console.error('Error saving user:', error);
-        } finally {
-            setSaving(false);
+
+        if (editingId) {
+            setMembers(prev => prev.map(m => m.id === editingId ? { ...m, ...formData } : m));
+        } else {
+            const newMember = {
+                id: crypto.randomUUID(),
+                ...formData
+            };
+            setMembers(prev => [...prev, newMember]);
         }
+        setUserView('list');
     };
 
-    const handleDeleteUser = async (id) => {
+    const handleDeleteUser = (id) => {
         if (confirm("Are you sure you want to remove this user?")) {
-            await onDeleteUser(id);
+            setMembers(prev => prev.filter(m => m.id !== id));
         }
     };
 
     const openUserForm = (member) => {
         if (member) {
             setEditingId(member.id);
-            setFormData({ name: member.name, email: member.email, asl: member.asl_level || member.asl, role: member.role });
+            setFormData({ name: member.name, email: member.email, asl: member.asl, role: member.role });
         } else {
             setEditingId(null);
             setFormData({ name: '', email: '', asl: 1, role: 'User' });
