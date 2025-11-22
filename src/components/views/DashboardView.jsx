@@ -1,248 +1,286 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { LogOut, Settings, Calendar, FileText, Briefcase, Database, Shield, ExternalLink, Save } from 'lucide-react';
+import { LogOut, Sparkles, Shield, Gem, Crown } from 'lucide-react';
+
+// --- BACKGROUND SYSTEM COMPONENTS ---
+const BackgroundSystem = ({ activeId }) => {
+    return (
+        <>
+            {/* BG 1: Teal Horizon */}
+            <div 
+                className={`fixed inset-0 z-0 transition-opacity duration-1000 ${activeId === 1 ? 'opacity-100' : 'opacity-0'}`}
+                style={{ background: 'radial-gradient(circle at 50% 100%, #0f766e 0%, #022c22 25%, #000000 60%)' }}
+            >
+                <div className="absolute bottom-0 left-0 right-0 h-px shadow-[0_0_80px_30px_rgba(45,212,191,0.4)]"></div>
+                <div className="stars"></div>
+            </div>
+
+            {/* BG 2: Deep Space */}
+            <div 
+                className={`fixed inset-0 z-0 transition-opacity duration-1000 ${activeId === 2 ? 'opacity-100' : 'opacity-0'}`}
+                style={{ 
+                    background: 'radial-gradient(circle at 20% 50%, #312e81 0%, #000000 70%), radial-gradient(circle at 80% 20%, #4c1d95 0%, transparent 50%)'
+                }}
+            >
+                <div className="stars"></div>
+            </div>
+
+            {/* BG 3: Midnight Aurora */}
+            <div 
+                className={`fixed inset-0 z-0 transition-opacity duration-1000 ${activeId === 3 ? 'opacity-100' : 'opacity-0'}`}
+                style={{ background: 'linear-gradient(to bottom, #020617, #0f172a)' }}
+            >
+                <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle,rgba(56,189,248,0.05)_0%,transparent_60%)] animate-pulse"></div>
+                <div className="stars"></div>
+            </div>
+        </>
+    );
+};
+
+const LeadershipBadge = ({ level }) => {
+    if (level < 1) return null;
+    
+    const config = {
+        1: { text: "InnerCircle", color: "text-pink-400", icon: <Gem className="w-3 h-3" /> },
+        2: { text: "Leadership", color: "text-amber-400", icon: <Shield className="w-3 h-3" /> },
+        3: { text: "Leadership", color: "text-amber-400", icon: <Shield className="w-3 h-3" /> },
+        4: { text: "CEO / Full Access", color: "text-purple-400", icon: <Crown className="w-3 h-3" /> }
+    }[level] || { text: "Member", color: "text-gray-400", icon: null };
+
+    return (
+        <div className={`flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 ${config.color}`}>
+            {config.icon}
+            <span className="text-[10px] font-bold uppercase tracking-wider">{config.text}</span>
+        </div>
+    );
+};
 
 const DashboardView = ({
-  courses,
+  courses = [],
   onSelectCourse,
   onAddCourse,
   userRole,
   userName,
   onNavigateToASL,
-  aslLevel,
+  aslLevel = 1,
   onLogout,
-  totalCoursesCount,
-  assignedCoursesCount
+  totalCoursesCount = 0,
+  assignedCoursesCount = 0
 }) => {
 
-  const currentDate = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long' });
+  const [bgId, setBgId] = useState(1);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
-    <div className="min-h-screen p-4 lg:p-8 flex gap-8 bg-[#020205] text-white overflow-hidden">
+    <div className="relative min-h-screen text-white font-sans overflow-hidden">
+        
+        {/* Background System */}
+        <BackgroundSystem activeId={bgId} />
 
-      {/* --- SIDEBAR --- */}
-      <motion.div
-        initial={{ x: -50, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="w-64 hidden lg:flex flex-col border-r border-white/5 pr-6"
-      >
-        <div className="mb-10 pl-2">
-          <h1 className="text-2xl font-bold tracking-widest text-cyan-400 arkai-logo">ARKAI</h1>
+        {/* Background Switcher (Top Right) */}
+        <div className="fixed top-4 right-4 z-50 flex gap-2">
+            <button onClick={() => setBgId(1)} className={`w-6 h-6 rounded-full border border-white/20 hover:scale-110 transition-transform ${bgId === 1 ? 'bg-teal-500 ring-2 ring-teal-500/50' : 'bg-teal-900'}`} title="Teal Horizon"></button>
+            <button onClick={() => setBgId(2)} className={`w-6 h-6 rounded-full border border-white/20 hover:scale-110 transition-transform ${bgId === 2 ? 'bg-indigo-500 ring-2 ring-indigo-500/50' : 'bg-indigo-900'}`} title="Deep Space"></button>
+            <button onClick={() => setBgId(3)} className={`w-6 h-6 rounded-full border border-white/20 hover:scale-110 transition-transform ${bgId === 3 ? 'bg-slate-500 ring-2 ring-slate-500/50' : 'bg-slate-900'}`} title="Aurora"></button>
         </div>
 
-        <nav className="flex-1 space-y-2">
-          <button className="w-full text-left px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white font-medium shadow-lg shadow-cyan-900/10 flex items-center gap-3">
-            <div className="w-1 h-4 bg-cyan-500 rounded-full"></div>
-            Dashboard
-          </button>
-          {userRole === 'admin' || userRole === 'Manager' ? (
-            <button
-              onClick={onNavigateToASL}
-              className="w-full text-left px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 transition-all flex items-center gap-3"
-            >
-              Admin Panel
-            </button>
-          ) : null}
-        </nav>
+        <div className="relative z-10 h-screen flex flex-col md:flex-row">
+            
+            {/* SIDEBAR (Glass style) */}
+            <aside className="w-64 flex-shrink-0 hidden md:flex flex-col border-r border-white/10 bg-black/40 backdrop-blur-md">
+                <div className="h-20 flex items-center justify-center border-b border-white/10 opacity-80">
+                   <h1 className="text-2xl font-bold tracking-widest text-cyan-400">ARKAI</h1>
+                </div>
+                
+                <nav className="flex-1 p-4 space-y-2">
+                    <button 
+                        onClick={() => setActiveTab('dashboard')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg border-l-2 transition-all ${activeTab === 'dashboard' ? 'text-white bg-white/10 border-indigo-500' : 'text-gray-400 hover:text-white hover:bg-white/5 border-transparent'}`}
+                    >
+                        <div className="w-5 text-center">📊</div> Dashboard
+                    </button>
+                    <button 
+                        onClick={() => setActiveTab('courses')}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg border-l-2 transition-all ${activeTab === 'courses' ? 'text-white bg-white/10 border-indigo-500' : 'text-gray-400 hover:text-white hover:bg-white/5 border-transparent'}`}
+                    >
+                        <div className="w-5 text-center">📚</div> Courses
+                    </button>
 
-        <button
-          onClick={onLogout}
-          className="flex items-center gap-2 text-gray-500 hover:text-white transition-colors pl-4 mt-auto mb-4"
-        >
-          <LogOut size={16} /> Logout
-        </button>
-      </motion.div>
+                    {(userRole === 'manager' || userRole === 'admin' || userRole === 'Manager') && (
+                         <button 
+                            onClick={onNavigateToASL}
+                            className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"
+                        >
+                            <div className="w-5 text-center">🛡️</div> Admin Panel
+                        </button>
+                    )}
+                </nav>
 
-      {/* --- MAIN CONTENT --- */}
-      <div className="flex-1 flex flex-col max-w-7xl mx-auto">
+                <div className="p-4 border-t border-white/10">
+                    <button onClick={onLogout} className="flex items-center gap-3 w-full px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors">
+                        <LogOut className="w-5 h-5" /> Logout
+                    </button>
+                </div>
+            </aside>
 
-        {/* HEADER */}
-        <header className="mb-8">
-          <h2 className="text-xl font-bold text-white">Dashboard Overview</h2>
-          <div className="flex items-center gap-2 text-sm text-gray-400 mt-1">
-            <span>Good Morning, <strong className="text-white">{userName}</strong></span>
-            <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <span>{userRole === 'Manager' ? 'System Auditor' : 'Team Member'}</span>
-            <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <span className="text-cyan-500 font-mono">ASL {aslLevel || 1}</span>
-            <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-            <span className="text-gray-600 text-xs">v1.0</span>
-          </div>
-        </header>
+            {/* MAIN CONTENT AREA */}
+            <div className="flex-1 flex flex-col overflow-hidden">
 
-        {/* HERO BANNER */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="w-full h-48 rounded-3xl relative overflow-hidden mb-8 border border-white/10 group"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-cyan-900/80 z-10"></div>
-          <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1600&q=80" className="absolute inset-0 w-full h-full object-cover opacity-50 group-hover:scale-105 transition-transform duration-700" alt="Banner" />
+                {/* HEADER */}
+                <header className="h-16 border-b border-white/10 bg-black/20 backdrop-blur-sm flex items-center justify-between px-8">
+                    <div>
+                        <h2 className="text-lg font-semibold text-white tracking-tight">ARKAI Operations Center</h2>
+                        <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+                            <span>Good Morning, <strong className="text-white">{userName}</strong></span>
+                            <span className="w-1 h-1 rounded-full bg-gray-600"></span>
+                            <LeadershipBadge level={aslLevel} />
+                        </div>
+                    </div>
+                    <div className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-all">
+                         <div className="w-4 h-4 bg-green-500 rounded-full animate-pulse"></div>
+                    </div>
+                </header>
 
-          <div className="absolute inset-0 z-20 p-8 flex flex-col justify-center">
-            <h1 className="text-3xl font-bold text-white mb-2">RightWay Ecosystem</h1>
-            <p className="text-blue-100 max-w-2xl">
-              Centralized operations command center. Access your tools, manage compliance, and oversee team performance with AI-driven insights.
-            </p>
-          </div>
-        </motion.div>
+                {/* SCROLLABLE CONTENT */}
+                <main className="flex-1 overflow-y-auto p-6 md:p-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                        
+                        {/* HERO BANNER (Cinematic) */}
+                        <div className="lg:col-span-3 xl:col-span-4 relative w-full h-48 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+                             {/* Abstract Background Image */}
+                             <img 
+                                src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&w=2560&auto=format&fit=crop" 
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-60" 
+                                alt="Ecosystem" 
+                             />
+                             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div>
+                             
+                             <div className="absolute inset-0 flex flex-col justify-center px-8">
+                                 <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">ARKAI Ecosystem</h1>
+                                 <p className="text-gray-300 text-sm max-w-2xl leading-relaxed">
+                                     Centralized learning command center. Access your modules, manage assessments, and track team performance with AI-driven insights.
+                                 </p>
+                             </div>
+                        </div>
 
-        {/* GRID LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* LEFT COLUMN (Main Content) */}
+                        <div className="lg:col-span-2 xl:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6">
+                             
+                             {/* COURSES (Glass Cards) */}
+                             <div className="glass-card-premium p-6 md:col-span-2 rounded-3xl">
+                                 <div className="flex items-center gap-3 mb-5 border-b border-white/10 pb-3">
+                                     <Sparkles className="w-5 h-5 text-indigo-400" />
+                                     <h3 className="font-semibold text-white text-sm">Active Modules</h3>
+                                 </div>
+                                 
+                                 {assignedCoursesCount === 0 ? (
+                                     <div className="p-8 text-center text-gray-500 italic bg-white/5 rounded-xl border border-dashed border-white/10">
+                                         No active modules assigned. Visit the library to enroll.
+                                     </div>
+                                 ) : (
+                                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                                         {courses.map(course => (
+                                             <motion.div 
+                                                key={course.id}
+                                                whileHover={{ y: -4 }}
+                                                onClick={() => onSelectCourse(course)}
+                                                className="group flex flex-col p-4 rounded-xl bg-white/5 border border-white/5 hover:bg-indigo-900/20 hover:border-indigo-500/30 transition-all cursor-pointer h-full"
+                                             >
+                                                 <div className="h-32 w-full rounded-lg overflow-hidden mb-3 relative">
+                                                     {course.imageUrl ? (
+                                                        <img src={course.imageUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" alt={course.title} />
+                                                     ) : (
+                                                        <div className="w-full h-full bg-indigo-500/20 flex items-center justify-center text-indigo-300 font-bold text-2xl">
+                                                            {course.title.charAt(0)}
+                                                        </div>
+                                                     )}
+                                                 </div>
+                                                 <h4 className="text-white font-bold text-sm mb-1 line-clamp-1">{course.title}</h4>
+                                                 <p className="text-xs text-gray-400 line-clamp-2 mb-3 flex-1">{course.description}</p>
+                                                 <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
+                                                     <div className="h-full bg-indigo-500 w-1/3"></div>
+                                                 </div>
+                                             </motion.div>
+                                         ))}
+                                     </div>
+                                 )}
+                             </div>
 
-          {/* LEFT COLUMN (APPS) */}
-          <div className="lg:col-span-2 space-y-6">
+                             {/* SYSTEM STATUS */}
+                             <div className="glass-card-premium p-6 flex flex-col justify-between rounded-3xl">
+                                 <div>
+                                     <div className="flex items-center gap-3 mb-3">
+                                         <div className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-yellow-400 border border-yellow-500/20">
+                                             <span className="text-xs">⚡</span>
+                                         </div>
+                                         <h3 className="font-semibold text-white text-sm">System Status</h3>
+                                     </div>
+                                     <div className="space-y-3">
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-gray-400">Neural Engine</span>
+                                             <span className="text-green-400 font-mono">ONLINE</span>
+                                         </div>
+                                         <div className="flex justify-between text-xs">
+                                             <span className="text-gray-400">Latency</span>
+                                             <span className="text-white font-mono">24ms</span>
+                                         </div>
+                                     </div>
+                                 </div>
+                                 <div className="mt-4 h-16 w-full bg-black/20 rounded-lg relative overflow-hidden flex items-end justify-between px-1 pb-1">
+                                     {[40, 70, 50, 90, 60, 80, 50, 75, 45, 60].map((h, i) => (
+                                         <div key={i} style={{ height: `${h}%` }} className="w-1.5 bg-yellow-500/50 rounded-t-sm"></div>
+                                     ))}
+                                 </div>
+                             </div>
 
-            {/* PROPRIETARY APPS */}
-            <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12]">
-              <div className="flex items-center gap-2 mb-6 opacity-70">
-                <span className="text-xs font-bold tracking-widest uppercase text-white">IRYCCENT</span>
-                <span className="text-xs text-gray-400">Small Business Builders - Proprietary APPS</span>
-              </div>
+                        </div>
 
-              <div className="grid grid-cols-3 gap-4">
-                <button className="p-4 rounded-2xl bg-[#13131F] border border-white/5 hover:border-cyan-500/30 hover:bg-[#1A1A25] transition-all group flex flex-col items-center justify-center gap-3 h-32">
-                  <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
-                    <Briefcase size={20} />
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-sm text-white">Action Plans</div>
-                    <div className="text-[10px] text-gray-500">by Reason Hub</div>
-                  </div>
-                </button>
+                        {/* RIGHT COLUMN (Tools) */}
+                        <div className="lg:col-span-1 xl:col-span-1 space-y-6">
+                             
+                             {/* CALENDAR */}
+                             <div className="glass-card-premium p-5 rounded-3xl">
+                                 <div className="flex justify-between items-end mb-4">
+                                     <div>
+                                         <span className="text-4xl font-bold text-white tracking-tight">{new Date().getDate()}</span>
+                                         <span className="text-sm text-gray-400 ml-1 uppercase tracking-wide">{new Date().toLocaleString('default', { month: 'long' })}</span>
+                                     </div>
+                                     <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest border border-indigo-500/30 px-2 py-0.5 rounded">Today</span>
+                                 </div>
+                                 <div className="space-y-3 pt-3 border-t border-white/10">
+                                     <div className="flex gap-3 items-start group cursor-pointer">
+                                         <div className="w-1 h-8 bg-indigo-500 rounded-full mt-1 group-hover:h-10 transition-all"></div>
+                                         <div>
+                                             <p className="text-xs text-white font-medium group-hover:text-indigo-300 transition-colors">Daily Knowledge Sync</p>
+                                             <p className="text-[10px] text-gray-500">10:00 AM</p>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
 
-                <button className="p-4 rounded-2xl bg-[#13131F] border border-white/5 hover:border-amber-500/30 hover:bg-[#1A1A25] transition-all group flex flex-col items-center justify-center gap-3 h-32">
-                  <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 group-hover:scale-110 transition-transform">
-                    <FileText size={20} />
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-sm text-white">BoP The Intake!</div>
-                  </div>
-                </button>
+                             {/* LIBRARY STATS */}
+                             <div className="glass-card-premium p-5 rounded-3xl">
+                                 <h3 className="font-semibold text-white text-sm mb-4">Library Pulse</h3>
+                                 <div className="space-y-3">
+                                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                                        <span className="text-xs text-gray-400">Assigned</span>
+                                        <span className="text-lg font-bold text-white">{assignedCoursesCount}</span>
+                                    </div>
+                                    {(userRole === 'manager' || userRole === 'admin' || userRole === 'Manager') && (
+                                        <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl">
+                                            <span className="text-xs text-gray-400">Total DB</span>
+                                            <span className="text-lg font-bold text-indigo-400">{totalCoursesCount}</span>
+                                        </div>
+                                    )}
+                                 </div>
+                             </div>
 
-                <button className="p-4 rounded-2xl bg-[#13131F] border border-white/5 hover:border-purple-500/30 hover:bg-[#1A1A25] transition-all group flex flex-col items-center justify-center gap-3 h-32">
-                  <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                    <Database size={20} />
-                  </div>
-                  <div className="text-center">
-                    <div className="font-bold text-sm text-white">ARKAI LXP</div>
-                  </div>
-                </button>
-              </div>
+                        </div>
+
+                    </div>
+                </main>
             </div>
-
-            {/* ZOHO & RESOURCES ROW */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* ZOHO */}
-              <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12] flex flex-col justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-6 h-6 bg-yellow-500 rounded flex items-center justify-center text-black font-bold text-xs">Z</div>
-                    <h3 className="font-bold text-white">Zoho Axis</h3>
-                  </div>
-                  <p className="text-xs text-gray-400 leading-relaxed mb-6">
-                    Unified launcher for the entire Zoho ecosystem suite. One-click access to CRM, Books, Mail, and more.
-                  </p>
-                </div>
-                <button className="w-full py-2.5 rounded-xl border border-white/10 hover:bg-white/5 text-sm font-medium text-white transition-colors flex items-center justify-center gap-2">
-                  <ExternalLink size={14} /> Launch Suite
-                </button>
-              </div>
-
-              {/* LLC RESOURCES */}
-              <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12]">
-                <div className="flex items-center gap-2 mb-4 text-green-400">
-                  <Shield size={16} />
-                  <h3 className="font-bold text-white text-sm">LLC Resources</h3>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <button className="px-3 py-2 rounded-lg bg-[#13131F] border border-white/5 hover:border-orange-500/30 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                    <span className="text-orange-500">☀</span> Sunbiz
-                  </button>
-                  <button className="px-3 py-2 rounded-lg bg-[#13131F] border border-white/5 hover:border-blue-500/30 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                    <span className="text-blue-500">⚖</span> IRS
-                  </button>
-                  <button className="px-3 py-2 rounded-lg bg-[#13131F] border border-white/5 hover:border-green-500/30 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                    <span className="text-green-500">💵</span> FinCEN
-                  </button>
-                  <button className="px-3 py-2 rounded-lg bg-[#13131F] border border-white/5 hover:border-indigo-500/30 text-xs text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                    <span className="text-indigo-500">💼</span> SBA
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* MANUALS */}
-            <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12]">
-              <div className="flex items-center gap-2 mb-4 opacity-70">
-                <span className="text-xs font-bold tracking-widest uppercase text-white">IRYCCENT</span>
-                <span className="text-xs text-gray-400">Procedures and Manuals</span>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <button className="p-4 rounded-xl bg-[#13131F] border border-white/5 hover:bg-[#1A1A25] flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <span className="text-orange-400">📖</span>
-                    <span className="text-sm font-medium text-gray-300 group-hover:text-white">Master Ops Manual</span>
-                  </div>
-                  <span className="text-gray-600 group-hover:text-white transition-colors">→</span>
-                </button>
-                <button className="p-4 rounded-xl bg-[#13131F] border border-white/5 hover:bg-[#1A1A25] flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <span className="text-cyan-400">☰</span>
-                    <span className="text-sm font-medium text-gray-300 group-hover:text-white">SOP General Manuals</span>
-                  </div>
-                  <span className="text-gray-600 group-hover:text-white transition-colors">→</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN (WIDGETS) */}
-          <div className="space-y-6">
-
-            {/* CALENDAR */}
-            <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12]">
-              <div className="flex justify-between items-start mb-6">
-                <div>
-                  <div className="text-4xl font-bold text-white">22</div>
-                  <div className="text-sm text-gray-400 uppercase tracking-wider">NOVIEMBRE</div>
-                </div>
-                <div className="px-2 py-1 rounded border border-blue-500/30 bg-blue-500/10 text-blue-400 text-[10px] font-bold uppercase">TODAY</div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="pl-3 border-l-2 border-purple-500">
-                  <div className="text-sm font-bold text-white">System Audit Review</div>
-                  <div className="text-xs text-gray-500">14:00 - 15:30</div>
-                </div>
-              </div>
-
-              {/* Grid Dots Decoration */}
-              <div className="mt-6 grid grid-cols-6 gap-2 opacity-20">
-                {[...Array(12)].map((_, i) => (
-                  <div key={i} className="w-1 h-1 rounded-full bg-gray-500 mx-auto"></div>
-                ))}
-              </div>
-            </div>
-
-            {/* QUICK NOTES */}
-            <div className="glass-panel p-6 rounded-3xl bg-[#0A0A12] flex-1 min-h-[300px] flex flex-col">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-2 text-pink-400">
-                  <Settings size={16} />
-                  <h3 className="font-bold text-white text-sm">Quick Notes</h3>
-                </div>
-                <button className="text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded-lg text-white transition-colors">Save</button>
-              </div>
-              <textarea
-                className="flex-1 w-full bg-[#13131F] border border-white/5 rounded-xl p-4 text-sm text-gray-300 resize-none focus:outline-none focus:border-pink-500/30 transition-colors"
-                placeholder="Jot down ideas..."
-              ></textarea>
-            </div>
-
-          </div>
         </div>
-      </div>
     </div>
   );
 };

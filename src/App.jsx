@@ -79,12 +79,16 @@ function App() {
                     <Route path="/" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><GateView /></PageWrapper>} />
                     <Route path="/dashboard" element={user ? <PageWrapper>
                       <DashboardView
-                        user={user}
-                        onLogout={handleLogout}
+                        courses={[]}
+                        onSelectCourse={(course) => window.location.href = `/course/${course.id}`}
+                        onAddCourse={handleAddCourse}
                         userRole={user.user_metadata?.role || 'User'}
                         userName={user.user_metadata?.full_name || user.email}
                         aslLevel={user.user_metadata?.asl || 1}
-                        onNavigateToASL={() => window.location.href = '/admin/asl'} // Simple nav for now, or use useNavigate
+                        onNavigateToASL={() => window.location.href = '/admin/asl'}
+                        onLogout={handleLogout}
+                        totalCoursesCount={0}
+                        assignedCoursesCount={0}
                       />
                     </PageWrapper> : <Navigate to="/" />} />
 
