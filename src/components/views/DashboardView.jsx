@@ -110,7 +110,7 @@ const DashboardView = ({
                         <div className="w-5 text-center">📚</div> Courses
                     </button>
 
-                    {(userRole === 'manager' || userRole === 'admin' || userRole === 'Manager') && (
+                    {(userRole?.toLowerCase() === 'manager' || userRole?.toLowerCase() === 'admin') && (
                          <button 
                             onClick={onNavigateToASL}
                             className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-400 hover:text-white hover:bg-white/5 rounded-lg border-l-2 border-transparent transition-all"
@@ -133,7 +133,7 @@ const DashboardView = ({
                 {/* HEADER */}
                 <header className="h-16 border-b border-white/10 bg-black/20 backdrop-blur-sm flex items-center justify-between px-8">
                     <div>
-                        <h2 className="text-lg font-semibold text-white tracking-tight">ARKAI Operations Center</h2>
+                        <h2 className="text-lg font-semibold text-white tracking-tight">ARKAI Learning Command Center</h2>
                         <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
                             <span>Good Morning, <strong className="text-white">{userName}</strong></span>
                             <span className="w-1 h-1 rounded-full bg-gray-600"></span>
@@ -270,7 +270,7 @@ const DashboardView = ({
                                         <span className="text-xs text-gray-400">Assigned</span>
                                         <span className="text-lg font-bold text-white">{assignedCoursesCount}</span>
                                     </div>
-                                    {(userRole === 'manager' || userRole === 'admin' || userRole === 'Manager') && (
+                                    {(userRole?.toLowerCase() === 'manager' || userRole?.toLowerCase() === 'admin') && (
                                         <div className="flex justify-between items-center p-3 bg-white/5 rounded-xl">
                                             <span className="text-xs text-gray-400">Total DB</span>
                                             <span className="text-lg font-bold text-indigo-400">{totalCoursesCount}</span>
