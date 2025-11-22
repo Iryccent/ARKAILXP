@@ -4,9 +4,10 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from '@/components/ui/toaster';
 import GateView from '@/components/views/GateView';
 import DashboardView from '@/components/views/DashboardView';
-import CoursesView from '@/components/views/CoursesView'; // Import the new view
+import CoursesView from '@/components/views/CoursesView';
 import CourseView from '@/components/views/CourseView';
 import AdminView from '@/components/views/AdminView';
+import AdminASLView from '@/components/views/AdminASLView'; // New Import
 import SandboxView from '@/components/views/SandboxView';
 import ProfileView from '@/components/views/ProfileView';
 import QuizBuilder from '@/components/admin/QuizBuilder';
@@ -16,12 +17,25 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import KaiCompanion from '@/components/kai/KaiCompanion';
 import IntroVideo from '@/components/IntroVideo';
 
+// Initial Mock Members for AdminASLView
+const INITIAL_MEMBERS = [
+  { id: 'u-001', name: 'Jadriel Irizarry', email: 'jadriel@iryccent.com', asl: 4, role: 'Manager' },
+  { id: 'u-002', name: 'Alex Tech', email: 'alex@iryccent.com', asl: 2, role: 'User' },
+  { id: 'u-003', name: 'Sarah Lead', email: 'sarah@iryccent.com', asl: 3, role: 'User' }
+];
+
 function App() {
   const { user, loading, signOut } = useAuth();
   const [introCompleted, setIntroCompleted] = useState(false);
-  
+  const [members, setMembers] = useState(INITIAL_MEMBERS); // Lifted State for Admin View
+
   const handleLogout = async () => {
     await signOut();
+  };
+
+  const handleAddCourse = (course) => {
+    console.log("Course added:", course);
+    // In a real app, this would save to Supabase
   };
 
   const PageWrapper = ({ children }) => (
@@ -36,7 +50,7 @@ function App() {
   );
 
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#020205] text-white">Loading...</div>}>
       <Helmet>
         <title>ARKAI LXP - AI Learning Experience Platform</title>
         <meta name="description" content="AI-powered learning platform for modern teams." />
@@ -44,39 +58,60 @@ function App() {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Rajdhani:wght@300;600&display=swap" rel="stylesheet" />
       </Helmet>
-      
-      {/* Loading state - Se muestra mientras carga la autenticación */}
+
       {loading ? (
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="text-2xl text-text-primary">Loading...</div>
+        <div className="min-h-screen flex items-center justify-center bg-[#020205]">
+          <div className="text-2xl text-white">Loading...</div>
         </div>
       ) : (
         <>
-          {/* Intro Video - Solo se muestra una vez por sesión, después del loading */}
           {!introCompleted && (
             <IntroVideo onComplete={() => setIntroCompleted(true)} />
           )}
-          
-          {/* Contenido principal - Solo se muestra después del intro */}
+
           {introCompleted && (
             <>
               <GlobalControls />
 
-      <Router>
-        <AnimatePresence mode="wait">
-          <Routes>
-            <Route path="/" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><GateView /></PageWrapper>} />
-            <Route path="/dashboard" element={user ? <PageWrapper><DashboardView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
-            <Route path="/courses" element={user ? <PageWrapper><CoursesView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} /> {/* Add the new route */}
-            <Route path="/course/:courseId" element={user ? <PageWrapper><CourseView user={user} /></PageWrapper> : <Navigate to="/" />} />
-            <Route path="/admin" element={user && user.user_metadata?.role === 'admin' ? <PageWrapper><AdminView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
-            <Route path="/admin/quiz-builder" element={user && user.user_metadata?.role === 'admin' ? <PageWrapper><QuizBuilder user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
-            <Route path="/sandbox" element={user ? <PageWrapper><SandboxView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
-            <Route path="/profile" element={user ? <PageWrapper><ProfileView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
-          </Routes>
-        </AnimatePresence>
-      </Router>
-      
+              <Router>
+                <AnimatePresence mode="wait">
+                  <Routes>
+                    <Route path="/" element={user ? <Navigate to="/dashboard" /> : <PageWrapper><GateView /></PageWrapper>} />
+                    <Route path="/dashboard" element={user ? <PageWrapper>
+                      <DashboardView
+                        user={user}
+                        onLogout={handleLogout}
+                        userRole={user.user_metadata?.role || 'User'}
+                        userName={user.user_metadata?.full_name || user.email}
+                        aslLevel={user.user_metadata?.asl || 1}
+                        onNavigateToASL={() => window.location.href = '/admin/asl'} // Simple nav for now, or use useNavigate
+                      />
+                    </PageWrapper> : <Navigate to="/" />} />
+
+                    <Route path="/courses" element={user ? <PageWrapper><CoursesView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
+                    <Route path="/course/:courseId" element={user ? <PageWrapper><CourseView user={user} /></PageWrapper> : <Navigate to="/" />} />
+
+                    {/* Legacy Admin View - Keeping for reference or fallback */}
+                    <Route path="/admin" element={user && user.user_metadata?.role === 'admin' ? <PageWrapper><AdminView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
+
+                    {/* NEW Admin ASL View */}
+                    <Route path="/admin/asl" element={user ? <PageWrapper>
+                      <AdminASLView
+                        onBack={() => window.location.href = '/dashboard'}
+                        onAddCourse={handleAddCourse}
+                        courses={[]}
+                        members={members}
+                        setMembers={setMembers}
+                      />
+                    </PageWrapper> : <Navigate to="/" />} />
+
+                    <Route path="/admin/quiz-builder" element={user ? <PageWrapper><QuizBuilder user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/dashboard" />} />
+                    <Route path="/sandbox" element={user ? <PageWrapper><SandboxView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
+                    <Route path="/profile" element={user ? <PageWrapper><ProfileView user={user} onLogout={handleLogout} /></PageWrapper> : <Navigate to="/" />} />
+                  </Routes>
+                </AnimatePresence>
+              </Router>
+
               {user && <KaiCompanion />}
 
               <Toaster />

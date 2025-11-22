@@ -35,267 +35,59 @@
     --noise-opacity: 0.03;
   }
 
-  /* --- DYNAMIC THEME STYLES --- */
-
-  /* --- All Dark Themes with Galaxy/Landscape Backgrounds --- */
-  /* Deep Space - Galaxy with stars */
-  .deepSpace {
-    --bg-color: #000000;
-    --text-primary: #EAEAEA;
-    --text-secondary: #A0A0A0;
-    --accent-primary: #00A9FF;
-    --accent-secondary: #89CFF0;
-    --kai-elements-bg: #0a0a0a;
-    --glass-bg: rgba(10, 10, 20, 0.7);
-    --glass-border: rgba(0, 169, 255, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Nebula Veil - Purple galaxy */
-  .nebulaVeil {
-    --bg-color: #0a0515;
-    --text-primary: #E8D5B5;
-    --text-secondary: #B4A284;
-    --accent-primary: #D946EF;
-    --accent-secondary: #E879F9;
-    --kai-elements-bg: #191122;
-    --glass-bg: rgba(25, 17, 34, 0.75);
-    --glass-border: rgba(217, 70, 239, 0.25);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-  }
-
-  /* Solar Eclipse - Dark landscape with orange glow */
-  .solarEclipse {
-    --bg-color: #0f0a0a;
-    --text-primary: #FBBF24;
-    --text-secondary: #F87171;
-    --accent-primary: #F97316;
-    --accent-secondary: #FB923C;
-    --kai-elements-bg: #1F2937;
-    --glass-bg: rgba(31, 41, 55, 0.7);
-    --glass-border: rgba(249, 115, 22, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Event Horizon - Deep space blue */
-  .eventHorizon {
-    --bg-color: #0a0d1a;
-    --text-primary: #A5B4FC;
-    --text-secondary: #C7D2FE;
-    --accent-primary: #818CF8;
-    --accent-secondary: #A5B4FC;
-    --kai-elements-bg: #1E1B4B;
-    --glass-bg: rgba(30, 27, 75, 0.75);
-    --glass-border: rgba(129, 140, 248, 0.25);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-  }
-
-  /* Lunar Surface - Moon landscape */
-  .lunarSurface {
-    --bg-color: #0f0f0f;
-    --text-primary: #D1D5DB;
-    --text-secondary: #9CA3AF;
-    --accent-primary: #E5E7EB;
-    --accent-secondary: #F3F4F6;
-    --kai-elements-bg: #1a1a1a;
-    --glass-bg: rgba(55, 65, 81, 0.7);
-    --glass-border: rgba(229, 231, 235, 0.15);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Midnight Aurora - Dark with aurora colors */
-  .midnightAurora {
-    --bg-color: #0D1117;
-    --text-primary: #E6EDF3;
-    --text-secondary: #7D8590;
-    --accent-primary: #6366F1;
-    --accent-secondary: #818CF8;
-    --kai-elements-bg: #161B22;
-    --glass-bg: rgba(28, 33, 40, 0.7);
-    --glass-border: rgba(99, 102, 241, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-  }
-
-  /* Starfield Glass - Starry night */
-  .starfieldGlass {
-    --bg-color: #020617;
-    --text-primary: #E2E8F0;
+  /* --- RIGHTWAY ECOSYSTEM THEME (PREMIUM DARK) --- */
+  :root {
+    --radius: 1rem; /* 16px - Slightly tighter than before */
+    
+    /* Z-Index Layers */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-popover: 600;
+    --z-tooltip: 700;
+    --z-kai-chat: 1000;
+    --z-notification: 1100;
+    
+    /* RightWay Color System */
+    --bg-color: #020205; /* Almost black, deep blue tint */
+    --text-primary: #F1F5F9;
     --text-secondary: #94A3B8;
-    --accent-primary: #6366F1;
-    --accent-secondary: #818CF8;
-    --kai-elements-bg: #0f172a;
-    --glass-bg: rgba(15, 23, 42, 0.75);
-    --glass-border: rgba(99, 102, 241, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Galaxy Dust - Dark galaxy */
-  .galaxyDust {
-    --bg-color: #000000;
-    --text-primary: #E5E7EB;
-    --text-secondary: #9CA3AF;
-    --accent-primary: #8B5CF6;
-    --accent-secondary: #A78BFA;
-    --kai-elements-bg: #0a0a0a;
-    --glass-bg: rgba(20, 20, 30, 0.75);
-    --glass-border: rgba(139, 92, 246, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Comet Trail - Space with comet */
-  .cometTrail {
-    --bg-color: #0a0a1a;
-    --text-primary: #E0E7FF;
-    --text-secondary: #A5B4FC;
-    --accent-primary: #818CF8;
-    --accent-secondary: #A5B4FC;
-    --kai-elements-bg: #1e1b4b;
-    --glass-bg: rgba(30, 27, 75, 0.7);
-    --glass-border: rgba(129, 140, 248, 0.25);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-  }
-
-  /* Void Gradient - Deep space void */
-  .voidGradient {
-    --bg-color: #000510;
-    --text-primary: #CBD5E1;
-    --text-secondary: #94A3B8;
-    --accent-primary: #60A5FA;
-    --accent-secondary: #93C5FD;
-    --kai-elements-bg: #0a1628;
-    --glass-bg: rgba(9, 32, 63, 0.75);
-    --glass-border: rgba(96, 165, 250, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Skywash - Dark night sky */
-  .skywash {
-    --bg-color: #0a0f1a;
-    --text-primary: #E0F2FE;
-    --text-secondary: #7DD3FC;
-    --accent-primary: #3b82f6;
-    --accent-secondary: #60a5fa;
-    --kai-elements-bg: #0f172a;
-    --glass-bg: rgba(15, 23, 42, 0.7);
-    --glass-border: rgba(59, 130, 246, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.4);
-  }
-
-  /* Sunrise Meadow - Dark mountain landscape */
-  .sunriseMeadow {
-    --bg-color: #0f0a05;
-    --text-primary: #FEF3C7;
-    --text-secondary: #FCD34D;
-    --accent-primary: #F59E0B;
-    --accent-secondary: #FBBF24;
-    --kai-elements-bg: #1a1208;
-    --glass-bg: rgba(26, 18, 8, 0.75);
-    --glass-border: rgba(245, 158, 11, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Citrus Pop - Dark sunset landscape */
-  .citrusPop {
-    --bg-color: #1a0f05;
-    --text-primary: #FED7AA;
-    --text-secondary: #FDBA74;
-    --accent-primary: #FBBF24;
-    --accent-secondary: #FCD34D;
-    --kai-elements-bg: #2a1a0a;
-    --glass-bg: rgba(42, 26, 10, 0.75);
-    --glass-border: rgba(251, 191, 36, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Coral Bloom - Dark ocean sunset */
-  .coralBloom {
-    --bg-color: #1a0a0f;
-    --text-primary: #FCE7F3;
-    --text-secondary: #F9A8D4;
-    --accent-primary: #EC4899;
-    --accent-secondary: #F472B6;
-    --kai-elements-bg: #2a0f1a;
-    --glass-bg: rgba(42, 15, 26, 0.75);
-    --glass-border: rgba(236, 72, 153, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Pastel Field - Dark forest landscape */
-  .pastelField {
-    --bg-color: #0a150a;
-    --text-primary: #D1FAE5;
-    --text-secondary: #6EE7B7;
-    --accent-primary: #22C55E;
-    --accent-secondary: #4ADE80;
-    --kai-elements-bg: #0f1f0f;
-    --glass-bg: rgba(15, 31, 15, 0.75);
-    --glass-border: rgba(34, 197, 94, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-  
-  /* Canyon Glow - Dark canyon landscape */
-  .canyonGlow {
-    --bg-color: #1a0f0a;
-    --text-primary: #FED7AA;
-    --text-secondary: #FDBA74;
-    --accent-primary: #F97316;
-    --accent-secondary: #FB923C;
-    --kai-elements-bg: #2a1a0f;
-    --glass-bg: rgba(42, 26, 15, 0.75);
-    --glass-border: rgba(249, 115, 22, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Tropical Ink - Dark tropical night */
-  .tropicalInk {
-    --bg-color: #0a0f15;
-    --text-primary: #E2E8F0;
-    --text-secondary: #94A3B8;
-    --accent-primary: #64748B;
-    --accent-secondary: #94A3B8;
-    --kai-elements-bg: #1a1f2a;
-    --glass-bg: rgba(26, 31, 42, 0.75);
-    --glass-border: rgba(100, 116, 139, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Coastal Breeze - Dark ocean night */
-  .coastalBreeze {
-    --bg-color: #0a1518;
-    --text-primary: #E0F2FE;
-    --text-secondary: #7DD3FC;
-    --accent-primary: #0EA5E9;
-    --accent-secondary: #38BDF8;
-    --kai-elements-bg: #0f1f24;
-    --glass-bg: rgba(15, 31, 36, 0.75);
-    --glass-border: rgba(14, 165, 233, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Summer Grain - Dark field landscape */
-  .summerGrain {
-    --bg-color: #0f0a05;
-    --text-primary: #FEF3C7;
-    --text-secondary: #FDE68A;
-    --accent-primary: #F59E0B;
-    --accent-secondary: #FBBF24;
-    --kai-elements-bg: #1a1208;
-    --glass-bg: rgba(26, 18, 8, 0.75);
-    --glass-border: rgba(245, 158, 11, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
-  }
-
-  /* Aurora Daylight - Dark aurora landscape */
-  .auroraDaylight {
-    --bg-color: #0a0f1a;
-    --text-primary: #E2E8F0;
-    --text-secondary: #94A3B8;
-    --accent-primary: #6366F1;
-    --accent-secondary: #818CF8;
-    --kai-elements-bg: #1a1f2a;
-    --glass-bg: rgba(26, 31, 42, 0.75);
-    --glass-border: rgba(99, 102, 241, 0.2);
-    --glass-shadow: rgba(0, 0, 0, 0.5);
+    
+    /* Accents */
+    --accent-primary: #6366F1; /* Indigo 500 */
+    --accent-secondary: #818CF8; /* Indigo 400 */
+    --accent-glow: rgba(99, 102, 241, 0.3);
+    
+    /* Component Colors */
+    --kai-elements-bg: #0F172A;
+    --glass-bg: rgba(10, 10, 16, 0.6); /* Darker glass */
+    --glass-border: rgba(255, 255, 255, 0.08); /* Subtler border */
+    --glass-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    --noise-opacity: 0.02;
+    
+    /* Tailwind Mappings */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
   }
 }
 

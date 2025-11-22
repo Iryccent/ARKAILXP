@@ -1,0 +1,56 @@
+// Lista de orígenes permitidos
+const ALLOWED_ORIGINS = [
+  // --- DOMINIOS DE PRODUCCIÓN ---
+  "https://j-irizarry.info",
+  "https://arkailxp.vercel.app",
+  // --- DOMINIOS DE DESARROLLO Y PREVIEW ---
+  "https://arkailxp-git-master-iryccents-projects.vercel.app",
+  "http://localhost:3000" // Desarrollo local
+];
+/**
+ * Verifica si un origen está en la lista blanca.
+ */ export function isOriginAllowed(origin) {
+  if (!origin) return false;
+  // Usamos .some() para permitir subdominios o variaciones de Vercel
+  // Pero .includes() para dominios exactos
+  return ALLOWED_ORIGINS.includes(origin);
+}
+/**
+ * Devuelve los headers de CORS para un origen dado.
+ */ export function getCorsHeaders(origin) {
+  const headers = {
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Vary': 'Origin'
+  };
+  // Solo añade el origen si está permitido
+  if (isOriginAllowed(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin;
+  }
+  return headers;
+}
+/**
+ * Maneja la petición OPTIONS (preflight) de CORS.
+ */ export function handleCorsOptions(req) {
+  const origin = req.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+  return new Response(null, {
+    status: 204,
+    headers
+  });
+}
+/**
+ * Envuelve una respuesta existente con los headers de CORS correctos.
+ */ export function withCors(response, req) {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+  const newHeaders = new Headers(response.headers);
+  for (const [key, value] of Object.entries(corsHeaders)){
+    newHeaders.set(key, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: newHeaders
+  });
+}

@@ -1,0 +1,218 @@
+// chatbot-kai — Supabase Edge Function (Deno)
+// Versión "Todo-en-Uno" para el editor web de Supabase
+// (Incluye CORS + Personalidad Amigable actualizada)
+
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+// ---- INICIO: Lógica de CORS ----
+const ALLOWED_ORIGINS = [
+  // --- DOMINIOS DE PRODUCCIÓN ---
+  "https://j-irizarry.info",
+  "https://arkailxp.vercel.app",
+  // --- DOMINIOS DE DESARROLLO Y PREVIEW ---
+  "https://arkailxp-git-master-iryccents-projects.vercel.app",
+  "http://localhost:3000", // Desarrollo local
+  "http://localhost:5173"  // Vite local
+];
+
+function isOriginAllowed(origin: string | null) {
+  if (!origin) return false;
+  return ALLOWED_ORIGINS.includes(origin);
+}
+
+function getCorsHeaders(origin: string | null) {
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Vary': 'Origin'
+  };
+  if (isOriginAllowed(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin!;
+  }
+  return headers;
+}
+
+function handleCorsOptions(req: Request) {
+  const origin = req.headers.get('origin');
+  const headers = getCorsHeaders(origin);
+  return new Response(null, {
+    status: 204,
+    headers
+  });
+}
+
+function withCors(response: Response, req: Request) {
+  const origin = req.headers.get('origin');
+  const corsHeaders = getCorsHeaders(origin);
+  const newHeaders = new Headers(response.headers);
+  for (const [key, value] of Object.entries(corsHeaders)){
+    newHeaders.set(key, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: newHeaders
+  });
+}
+// ---- FIN: Lógica de CORS ----
+
+// ---- Persona / System Prompt (Actualizado) ----
+const systemPromptKai = `
+You are KAI, the official Learning Companion for ARKAI LXP.
+
+GOALS
+- Prioriza ser **claro, útil y amigable**.
+- Longitud ADAPTABLE al contexto:
+  - Por defecto: breve y conciso (3–6 líneas).
+  - Ampliar cuando el tema lo requiera o el usuario lo pida (usando secciones, ejemplos o pasos).
+- Cuando una imagen mejore la comprensión, sugiere UNA con el marcador:
+  [[IMAGE:"<descripción clara en español>"]]
+  (El frontend llamará a /generate-image-kai.)
+
+STYLE
+- Español neutro (o sigue el idioma del usuario si usa otro).
+- Tono **cercano, servicial y positivo**. ¡Piensa como un tutor amigable!
+- **Usa Markdown (listas, **negritas**, y saltos de línea) para que la respuesta sea fácil de leer.** No escribas todo "junto".
+- Evita relleno, no repitas la pregunta, no uses despedidas.
+
+OUTPUT RULES
+- Responde primero el contenido. Si aplica, cierra con la marca [[IMAGE:"..."]].
+- Máximo una marca por respuesta.
+`.trim();
+
+const GEMINI_KEY = (Deno.env.get("GEMINI_API_KEY") || "").trim();
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${encodeURIComponent(GEMINI_KEY)}`;
+
+serve(async (req) => {
+  // --- Manejo de CORS con la lógica interna ---
+  if (req.method === "OPTIONS") {
+    return handleCorsOptions(req);
+  }
+
+  if (req.method !== "POST") {
+    const errRes = new Response(JSON.stringify({
+      error: "Method not allowed"
+    }), {
+      status: 405,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return withCors(errRes, req);
+  }
+
+  try {
+    if (!GEMINI_KEY) {
+      const errRes = new Response(JSON.stringify({
+        error: "Missing GEMINI_API_KEY"
+      }), {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return withCors(errRes, req);
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const prompt = String(body?.prompt ?? body?.messages?.[0]?.content ?? "").trim();
+
+    if (!prompt) {
+      const errRes = new Response(JSON.stringify({
+        error: 'Falta "prompt".'
+      }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return withCors(errRes, req);
+    }
+
+    const payload = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              text: `${systemPromptKai}\n\nUsuario: ${prompt}`
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        maxOutputTokens: 2048,
+        temperature: 0.6
+      }
+    };
+
+    const res = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const txt = await res.text();
+
+    if (!res.ok) {
+      const errRes = new Response(JSON.stringify({
+        error: `Gemini error ${res.status}`,
+        details: txt
+      }), {
+        status: 502,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return withCors(errRes, req);
+    }
+
+    let data;
+    try {
+      data = JSON.parse(txt);
+    } catch {
+      data = null;
+    }
+
+    const parts = data?.candidates?.[0]?.content?.parts;
+    const text = Array.isArray(parts) ? parts.map((p: any) => p?.text || "").join("").trim() : "";
+
+    if (!text) {
+      const reason = data?.candidates?.[0]?.finishReason ?? "UNKNOWN";
+      const errRes = new Response(JSON.stringify({
+        error: "Empty content",
+        finishReason: reason,
+        raw: data
+      }), {
+        status: 502,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+      return withCors(errRes, req);
+    }
+
+    const okRes = new Response(JSON.stringify({
+      content: text
+    }), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return withCors(okRes, req);
+
+  } catch (err: any) {
+    const errRes = new Response(JSON.stringify({
+      error: String(err?.message || err)
+    }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+    return withCors(errRes, req);
+  }
+});

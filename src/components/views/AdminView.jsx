@@ -3,7 +3,7 @@ import Sidebar from '@/components/dashboard/Sidebar';
 import { supabase } from '@/lib/supabaseClient';
 import { toast } from '@/components/ui/use-toast';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, BookCopy, PlusCircle, BrainCircuit, X, Loader2, Save } from 'lucide-react';
+import { Users, BookCopy, PlusCircle, BrainCircuit, X, Loader2, Save, Mail, Key, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { marked } from 'marked';
@@ -195,33 +195,44 @@ const UserManagement = ({ setView }) => {
     const [users, setUsers] = useState([]);
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            const { data: usersData, error: usersError } = await supabase.from('profiles').select('*');
-            if (usersError) toast({ variant: "destructive", title: "Error fetching users", description: usersError.message });
-            else setUsers(usersData);
+    const fetchData = useCallback(async () => {
+        setLoading(true);
+        const { data: usersData, error: usersError } = await supabase.from('profiles').select('*');
+        if (usersError) toast({ variant: "destructive", title: "Error fetching users", description: usersError.message });
+        else setUsers(usersData);
 
-            const { data: coursesData, error: coursesError } = await supabase.from('courses').select('*');
-            if (coursesError) toast({ variant: "destructive", title: "Error fetching courses", description: coursesError.message });
-            else setCourses(coursesData);
-            
-            setLoading(false);
-        };
-        fetchData();
+        const { data: coursesData, error: coursesError } = await supabase.from('courses').select('*');
+        if (coursesError) toast({ variant: "destructive", title: "Error fetching courses", description: coursesError.message });
+        else setCourses(coursesData);
+        
+        setLoading(false);
     }, []);
 
-    const assignCourse = async (userId, courseId) => {
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
+
+    const assignCourse = async (userId, courseId, dueDate = null) => {
         if (!userId || !courseId) {
             toast({ variant: "destructive", title: "Selection missing" });
             return;
         }
-        const { error } = await supabase.from('assigned_courses').insert({ user_id: userId, course_id: courseId, progress_percentage: 0 });
+        const assignmentData = { 
+            user_id: userId, 
+            course_id: courseId, 
+            progress_percentage: 0 
+        };
+        if (dueDate) {
+            assignmentData.due_date = dueDate;
+        }
+        const { error } = await supabase.from('assigned_courses').insert(assignmentData);
         if (error) {
             toast({ variant: "destructive", title: "Assignment Failed", description: error.message });
         } else {
             toast({ title: "Success!", description: "Course assigned." });
+            fetchData();
         }
     };
     
@@ -230,7 +241,20 @@ const UserManagement = ({ setView }) => {
             <button onClick={() => setView('dashboard')} className="inline-flex items-center gap-2 mb-6 text-accent-primary hover:underline">
                 &larr; Back to Cockpit
             </button>
-            <h1 className="text-4xl font-bold text-text-primary mb-6">User Management</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-4xl font-bold text-text-primary">User Management</h1>
+                <Dialog open={isCreateUserOpen} onOpenChange={setIsCreateUserOpen}>
+                    <DialogTrigger asChild>
+                        <Button><PlusCircle className="mr-2 h-5 w-5" /> Create User</Button>
+                    </DialogTrigger>
+                    <DialogContent className="glass-panel max-w-md">
+                        <DialogHeader>
+                            <DialogTitle className="text-2xl font-bold">Create New User</DialogTitle>
+                        </DialogHeader>
+                        <CreateUserForm onSuccess={() => { setIsCreateUserOpen(false); fetchData(); }} />
+                    </DialogContent>
+                </Dialog>
+            </div>
              {loading ? (
                 <div className="flex justify-center items-center h-64"><Loader2 className="h-8 w-8 animate-spin text-accent-primary" /></div>
             ) : (
@@ -239,6 +263,7 @@ const UserManagement = ({ setView }) => {
                         <thead className="border-b border-glass-border">
                             <tr>
                                 <th className="p-4 font-semibold">Name</th>
+                                <th className="p-4 font-semibold hidden md:table-cell">Email</th>
                                 <th className="p-4 font-semibold hidden md:table-cell">Role</th>
                                 <th className="p-4 font-semibold">Assign Course</th>
                             </tr>
@@ -246,11 +271,18 @@ const UserManagement = ({ setView }) => {
                         <tbody>
                             {users.map(u => (
                                 <tr key={u.id} className="border-b border-glass-border/50">
-                                    <td className="p-4 font-medium">{u.full_name}</td>
-                                    <td className="p-4 capitalize hidden md:table-cell">{u.role}</td>
+                                    <td className="p-4 font-medium">{u.full_name || 'N/A'}</td>
+                                    <td className="p-4 text-sm text-text-secondary hidden md:table-cell">{u.email || 'N/A'}</td>
+                                    <td className="p-4 capitalize hidden md:table-cell">{u.role || 'student'}</td>
                                     <td className="p-4">
                                         <select
-                                            onChange={(e) => assignCourse(u.id, e.target.value)}
+                                            onChange={(e) => {
+                                                const courseId = e.target.value;
+                                                if (courseId) {
+                                                    const dueDate = prompt("Enter due date (YYYY-MM-DD) or leave empty:");
+                                                    assignCourse(u.id, courseId, dueDate || null);
+                                                }
+                                            }}
                                             className="bg-background border border-glass-border p-2 rounded-lg text-sm focus:ring-accent-primary focus:border-accent-primary"
                                             defaultValue=""
                                         >
@@ -265,6 +297,125 @@ const UserManagement = ({ setView }) => {
                 </div>
             )}
         </div>
+    );
+};
+
+// Create User Form Component
+const CreateUserForm = ({ onSuccess }) => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [role, setRole] = useState('student');
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!email || !password || !fullName) {
+            toast({ variant: "destructive", title: "Missing fields", description: "Please fill all required fields." });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            // Nota: Para crear usuarios sin confirmación de email desde el frontend,
+            // idealmente se debería usar una Edge Function con service_role key.
+            // Por ahora, usamos signUp que requiere confirmación de email.
+            // En producción, crear una Edge Function 'create-user-admin' que use service_role.
+            
+            const { data: authData, error: authError } = await supabase.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        role: role
+                    }
+                }
+            });
+
+            if (authError) throw authError;
+            if (!authData.user) throw new Error('Failed to create user');
+
+            // Crear perfil en la tabla profiles
+            const { error: profileError } = await supabase.from('profiles').insert({
+                id: authData.user.id,
+                full_name: fullName,
+                email: email,
+                role: role
+            });
+
+            if (profileError) {
+                // Si el perfil ya existe, actualizar
+                const { error: updateError } = await supabase
+                    .from('profiles')
+                    .update({ full_name: fullName, role: role })
+                    .eq('id', authData.user.id);
+                if (updateError) throw updateError;
+            }
+
+            toast({ title: "User Created!", description: `${fullName} has been added to the system.` });
+            setEmail('');
+            setPassword('');
+            setFullName('');
+            setRole('student');
+            if (onSuccess) onSuccess();
+        } catch (error) {
+            toast({ variant: "destructive", title: "Failed to create user", description: error.message });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+                <label className="text-sm font-medium text-text-secondary mb-1 block">Full Name *</label>
+                <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className="w-full bg-background border border-glass-border p-2 rounded-lg text-text-primary"
+                    required
+                />
+            </div>
+            <div>
+                <label className="text-sm font-medium text-text-secondary mb-1 block">Email *</label>
+                <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-background border border-glass-border p-2 rounded-lg text-text-primary"
+                    required
+                />
+            </div>
+            <div>
+                <label className="text-sm font-medium text-text-secondary mb-1 block">Password *</label>
+                <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-background border border-glass-border p-2 rounded-lg text-text-primary"
+                    required
+                    minLength={6}
+                />
+            </div>
+            <div>
+                <label className="text-sm font-medium text-text-secondary mb-1 block">Role *</label>
+                <select
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="w-full bg-background border border-glass-border p-2 rounded-lg text-text-primary"
+                    required
+                >
+                    <option value="student">Student</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <Button type="submit" disabled={loading} className="w-full" size="lg">
+                {loading ? <Loader2 className="mr-2 h-5 w-5 animate-spin" /> : <Save className="mr-2 h-5 w-5" />}
+                Create User
+            </Button>
+        </form>
     );
 };
 

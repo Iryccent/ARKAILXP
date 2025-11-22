@@ -50,6 +50,12 @@ module.exports = {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))',
 				},
+        // RightWay Ecosystem Custom Colors
+        'rightway-dark': '#05050A', // Deepest background
+        'rightway-panel': '#0A0A12', // Panel background
+        'rightway-border': '#1F1F2E', // Soft border
+        'rightway-accent': '#6366F1', // Primary accent (Indigo)
+        'rightway-glow': 'rgba(99, 102, 241, 0.15)', // Soft glow
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

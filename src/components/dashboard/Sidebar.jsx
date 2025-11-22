@@ -14,12 +14,14 @@ const Sidebar = ({ user, onLogout }) => {
   const { toast } = useToast();
 
   const handleAdminAccess = () => {
-    const code = prompt("Enter Admin Access Code:");
+    const code = prompt("Auditor Override\nEnter Access Code:");
     if (code === '405527') {
-      toast({ title: "Access Granted", description: "Redirecting to Admin Panel..." });
+      // Guardar en sessionStorage que pasó el override
+      sessionStorage.setItem('auditor_override', 'true');
+      toast({ title: "Auditor Override Granted", description: "Redirecting to Admin Panel..." });
       navigate('/admin');
     } else if (code !== null) {
-      toast({ variant: "destructive", title: "Access Denied", description: "Incorrect code." });
+      toast({ variant: "destructive", title: "Access Denied", description: "Incorrect override code." });
     }
   };
 
