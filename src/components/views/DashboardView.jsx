@@ -65,6 +65,8 @@ const DashboardView = ({
             <span>{userRole === 'Manager' ? 'System Auditor' : 'Team Member'}</span>
             <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
             <span className="text-cyan-500 font-mono">ASL {aslLevel || 1}</span>
+            <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
+            <span className="text-gray-600 text-xs">v1.0</span>
           </div>
         </header>
 
