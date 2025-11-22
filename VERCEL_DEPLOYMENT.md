@@ -21,7 +21,7 @@ Agregar estas **5 variables OBLIGATORIAS** (aplicar a: Production, Preview, Deve
 | `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOi...` | Frontend - Anon Key |
 | `SUPABASE_URL` | `https://uzviszqevkddoszrxwen.supabase.co` | Backend API - URL Supabase |
 | `SUPABASE_ANON_KEY` | `eyJhbGciOi...` | Backend API - Anon Key |
-| `GEMINI_API_KEY` | `AIzaSyAEUbF7YG3oGT86uQnVwhD6x6GIYpIdYqY` | ⭐ **CRÍTICO** - Para IA (chat, quiz) |
+| `GEMINI_API_KEY` | `TU_GEMINI_API_KEY_AQUI` | ⭐ **CRÍTICO** - Para IA (chat, quiz) |
 
 **Opcionales** (solo si usas estos providers):
 

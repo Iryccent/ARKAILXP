@@ -16,7 +16,7 @@ SUPABASE_URL=https://uzviszqevkddoszrxwen.supabase.co
 SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV6dmlzenFldmtkZG9zenJ4d2VuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NTU0OTAsImV4cCI6MjA3NjIzMTQ5MH0.2PJ8AyaV7fqDUbcEVF3z_fLGUI-1wBKHwuy9n9cWQoY
 
 # ⭐ Gemini AI (CRÍTICO)
-GEMINI_API_KEY=AIzaSyAEUbF7YG3oGT86uQnVwhD6x6GIYpIdYqY
+GEMINI_API_KEY=TU_GEMINI_API_KEY_AQUI
 ```
 
 ---
@@ -58,7 +58,7 @@ Apply: ☑️ Production ☑️ Preview ☑️ Development
 ### 5. GEMINI_API_KEY ⭐ (CRÍTICO)
 ```
 Name:  GEMINI_API_KEY
-Value: AIzaSyAEUbF7YG3oGT86uQnVwhD6x6GIYpIdYqY
+Value: TU_GEMINI_API_KEY_AQUI
 Apply: ☑️ Production ☑️ Preview ☑️ Development
 ```
 
