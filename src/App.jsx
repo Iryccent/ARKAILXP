@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { Toaster } from '@/components/ui/toaster';
@@ -16,18 +16,13 @@ import GlobalControls from '@/components/GlobalControls';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import KaiCompanion from '@/components/kai/KaiCompanion';
 import IntroVideo from '@/components/IntroVideo';
-
-// Initial Mock Members for AdminASLView
-const INITIAL_MEMBERS = [
-  { id: 'u-001', name: 'Jadriel Irizarry', email: 'jadriel@iryccent.com', asl: 4, role: 'Manager' },
-  { id: 'u-002', name: 'Alex Tech', email: 'alex@iryccent.com', asl: 2, role: 'User' },
-  { id: 'u-003', name: 'Sarah Lead', email: 'sarah@iryccent.com', asl: 3, role: 'User' }
-];
+import { useUsers } from '@/hooks/useUsers';
 
 function App() {
   const { user, loading, signOut } = useAuth();
+  const { users, createUser, updateUser, deleteUser, getCurrentUserProfile } = useUsers();
   const [introCompleted, setIntroCompleted] = useState(false);
-  const [members, setMembers] = useState(INITIAL_MEMBERS); // Lifted State for Admin View
+  const [userProfile, setUserProfile] = useState(null);
 
   // Helper function to determine if user is admin
   const isAdmin = (user) => {
@@ -49,11 +44,29 @@ function App() {
   // Get ASL level with fallback
   const getASLLevel = (user) => {
     if (!user) return 1;
+    if (userProfile) return userProfile.asl_level;
     if (isAdmin(user)) return 4; // Admins get full access
     return user.user_metadata?.asl || 1;
   };
 
+  // Load user profile from database
+  useEffect(() => {
+    const loadUserProfile = async () => {
+      if (user?.id) {
+        const { data } = await getCurrentUserProfile(user.id);
+        if (data) {
+          setUserProfile(data);
+        }
+      } else {
+        setUserProfile(null);
+      }
+    };
+
+    loadUserProfile();
+  }, [user]);
+
   const handleLogout = async () => {
+    setUserProfile(null);
     await signOut();
   };
 
@@ -128,8 +141,10 @@ function App() {
                         onBack={() => window.location.href = '/dashboard'}
                         onAddCourse={handleAddCourse}
                         courses={[]}
-                        members={members}
-                        setMembers={setMembers}
+                        members={users}
+                        onCreateUser={createUser}
+                        onUpdateUser={updateUser}
+                        onDeleteUser={deleteUser}
                       />
                     </PageWrapper> : <Navigate to="/" />} />
 
