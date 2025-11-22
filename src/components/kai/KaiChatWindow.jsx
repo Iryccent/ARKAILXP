@@ -1,42 +1,143 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, Loader2, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabaseClient';
+import { Send, X, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { toast } from '@/components/ui/use-toast';
-import { marked } from 'marked';
 
-// Configurar marked para preservar espacios y formato
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-  headerIds: false,
-  mangle: false,
-});
+// ==========================================
+// 🎨 SUB-COMPONENTS: KaiThinkingIndicator
+// ==========================================
+const KaiThinkingIndicator = ({ text = "Processing..." }) => (
+    <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0 }}
+        className="flex items-center gap-3 p-3 bg-cyan-950/30 rounded-lg border border-cyan-500/20 self-start ml-4 backdrop-blur-md shadow-[0_0_15px_rgba(34,211,238,0.1)]"
+    >
+        <div className="flex space-x-1">
+            <motion.div 
+                className="w-1.5 h-1.5 bg-cyan-400 rounded-full shadow-[0_0_5px_currentColor]"
+                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1, repeat: Infinity }}
+            />
+            <motion.div 
+                className="w-1.5 h-1.5 bg-cyan-400 rounded-full shadow-[0_0_5px_currentColor]"
+                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1, repeat: Infinity, delay: 0.2 }}
+            />
+            <motion.div 
+                className="w-1.5 h-1.5 bg-cyan-400 rounded-full shadow-[0_0_5px_currentColor]"
+                animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 1, repeat: Infinity, delay: 0.4 }}
+            />
+        </div>
+        <span className="text-[10px] text-cyan-300 font-mono tracking-widest uppercase">{text}</span>
+    </motion.div>
+);
+
+// ==========================================
+// 🎨 SUB-COMPONENTS: ActionChip
+// ==========================================
+const ActionChip = ({ label, onClick, disabled, icon, color = 'cyan' }) => {
+    const colorStyles = {
+        cyan: 'border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/10 shadow-cyan-500/10',
+        purple: 'border-purple-500/30 text-purple-300 hover:bg-purple-500/10 shadow-purple-500/10',
+        green: 'border-green-500/30 text-green-300 hover:bg-green-500/10 shadow-green-500/10',
+    };
+
+    return (
+        <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={onClick}
+            disabled={disabled}
+            className={`
+                flex items-center gap-2 px-3 py-1.5 rounded-md border bg-black/40 backdrop-blur-md 
+                text-[10px] font-bold uppercase tracking-wider transition-all duration-200
+                shadow-lg disabled:opacity-30 disabled:cursor-not-allowed
+                ${colorStyles[color]}
+            `}
+        >
+            {icon}
+            {label}
+        </motion.button>
+    );
+};
+
+// ==========================================
+// 🎨 HELPER: Format Message (Custom Markdown Parser)
+// ==========================================
+const formatMessage = (content) => {
+    if (!content) return null;
+    const lines = content.split('\n');
+    const formattedElements = [];
+    let currentList = [];
+    
+    lines.forEach((line, index) => {
+        const trimmed = line.trim();
+        if (line.startsWith('### ')) {
+            if (currentList.length > 0) {
+                formattedElements.push(<ul key={`ul-${index}`} className="list-disc pl-6 mb-4 space-y-2 text-cyan-50/90">{currentList}</ul>);
+                currentList = [];
+            }
+            formattedElements.push(<h3 key={index} className="text-cyan-400 font-bold text-sm mt-6 mb-3 uppercase tracking-wider border-b border-cyan-500/30 pb-1 w-full text-shadow-sm">{line.replace('### ', '')}</h3>);
+            return;
+        }
+        if (trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+            const listContent = trimmed.replace(/^[\*\-]\s/, '');
+            const parts = listContent.split(/(\*\*.*?\*\*)/g);
+            const renderedLine = parts.map((part, i) => {
+                if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="text-cyan-200 font-bold">{part.slice(2, -2)}</strong>;
+                return part;
+            });
+            currentList.push(<li key={index} className="text-sm leading-relaxed text-gray-300/90 pl-2 border-l-2 border-cyan-500/20 mb-2">{renderedLine}</li>);
+            return;
+        }
+        if (currentList.length > 0) {
+            formattedElements.push(<ul key={`ul-${index}`} className="list-none pl-2 mb-4 space-y-2 text-cyan-50/90">{currentList}</ul>);
+            currentList = [];
+        }
+        if (trimmed !== '') {
+             const parts = line.split(/(\*\*.*?\*\*)/g);
+             const renderedLine = parts.map((part, i) => {
+                if (part.startsWith('**') && part.endsWith('**')) return <strong key={i} className="text-cyan-200 font-bold drop-shadow-[0_0_5px_rgba(34,211,238,0.4)]">{part.slice(2, -2)}</strong>;
+                return part;
+            });
+            formattedElements.push(<p key={index} className="mb-3 text-sm leading-relaxed text-gray-300">{renderedLine}</p>);
+        }
+    });
+     if (currentList.length > 0) {
+        formattedElements.push(<ul key={`ul-last`} className="list-none pl-2 mb-4 space-y-2 text-cyan-50/90">{currentList}</ul>);
+    }
+    return formattedElements;
+};
 
 
 const KaiChatWindow = ({ isVisible, onClose }) => {
     const { session } = useAuth();
     const [messages, setMessages] = useState([
         {
+            id: 'init',
             role: 'assistant',
             content: '¡Hola! Soy KAI, tu compañero oficial de aprendizaje. ¿Cómo puedo ayudarte hoy en tu viaje de aprendizaje?'
         }
     ]);
     const [input, setInput] = useState('');
     const [isThinking, setIsThinking] = useState(false);
+    const [isGeneratingImage, setIsGeneratingImage] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
 
-    useEffect(scrollToBottom, [messages]);
+    useEffect(scrollToBottom, [messages, isThinking, isGeneratingImage]);
 
-    const handleSendMessage = async (e) => {
-        e.preventDefault();
-        if (!input.trim() || isThinking) return;
+    // ==========================================
+    // 🎯 PROCESS RESPONSE (Main Message Handler)
+    // ==========================================
+    const processResponse = async (textInput) => {
+        if (!textInput.trim() || isThinking || isGeneratingImage) return;
 
         // Verificar autenticación
         if (!session) {
@@ -48,22 +149,19 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
             return;
         }
 
-        const userMessage = { role: 'user', content: input };
-        setMessages(prev => [...prev, userMessage]);
-        const currentInput = input;
+        const userMsg = { id: crypto.randomUUID(), role: 'user', content: textInput };
+        setMessages(prev => [...prev, userMsg]);
         setInput('');
         setIsThinking(true);
 
         try {
-            // ✅ Llamar a la función proxy de Vercel que evita problemas de CORS
-            // Esta función llama a chatbot-kai de Supabase internamente
             const response = await fetch('/api/kai/chatbot', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    prompt: currentInput
+                    prompt: textInput
                 })
             });
 
@@ -85,51 +183,13 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
             }
 
             const aiResponseContent = data.content || "Lo siento, KAI respondió pero no encontré el mensaje.";
-
-            // ✅ Detectar si KAI quiere generar una imagen (según especificaciones)
-            // Si la respuesta contiene "Generating an image...", llamar a generate-image-kai
-            if (aiResponseContent.includes('Generating an image...') || aiResponseContent.includes('generating an image')) {
-                // Primero mostrar el mensaje de texto
-                const aiMessage = { role: 'assistant', content: aiResponseContent };
-                setMessages(prev => [...prev, aiMessage]);
-
-                // Luego generar la imagen automáticamente
-                try {
-                    const imageResponse = await fetch('/api/kai/generate-image', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            prompt: currentInput // O extraer el prompt de la respuesta si es necesario
-                        })
-                    });
-
-                    if (imageResponse.ok) {
-                        const imageData = await imageResponse.json();
-
-                        if (imageData?.imageUrl) {
-                        const imageMessage = {
-                            role: 'assistant',
-                            content: `![Imagen generada](${imageData.imageUrl})`,
-                            isImage: true,
-                            imageUrl: imageData.imageUrl
-                        };
-                        setMessages(prev => [...prev, imageMessage]);
-                        }
-                    }
-                } catch (imageError) {
-                    console.error('Error generando imagen:', imageError);
-                }
-            } else {
-                // Respuesta normal de texto
-                const aiMessage = { role: 'assistant', content: aiResponseContent };
-                setMessages(prev => [...prev, aiMessage]);
-            }
+            const aiMessage = { id: crypto.randomUUID(), role: 'assistant', content: aiResponseContent };
+            setMessages(prev => [...prev, aiMessage]);
 
         } catch (error) {
             console.error('Error al invocar chatbot-kai:', error);
             const errorMessage = {
+                id: crypto.randomUUID(),
                 role: 'assistant',
                 content: `Lo siento, estoy teniendo problemas para conectar: ${error.message}`
             };
@@ -145,110 +205,194 @@ const KaiChatWindow = ({ isVisible, onClose }) => {
         }
     };
 
+    // ==========================================
+    // 🎨 IMAGE GENERATION HANDLER
+    // ==========================================
+    const handleImageGeneration = async (prompt) => {
+        if (!prompt.trim() || isThinking || isGeneratingImage) return;
+
+        if (!session) {
+            toast({
+                variant: "destructive",
+                title: "Autenticación requerida",
+                description: "Por favor, inicia sesión para usar KAI.",
+            });
+            return;
+        }
+
+        const userMsg = { id: crypto.randomUUID(), role: 'user', content: `Visualize: ${prompt}` };
+        setMessages(prev => [...prev, userMsg]);
+        setInput('');
+        setIsGeneratingImage(true);
+        const assistantId = crypto.randomUUID();
+        setMessages(prev => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
+
+        try {
+            const imageResponse = await fetch('/api/kai/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    prompt: prompt
+                })
+            });
+
+            if (imageResponse.ok) {
+                const imageData = await imageResponse.json();
+                const successMsg = `Visual synthesis complete: "${prompt}"`;
+                setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: successMsg, imageUrl: imageData.imageUrl } : m));
+            } else {
+                throw new Error('Failed to generate image');
+            }
+        } catch (err) {
+            const errorMsg = "Visual synthesis failed. Systems overloaded.";
+            setMessages(prev => prev.map(m => m.id === assistantId ? { ...m, content: errorMsg } : m));
+        } finally {
+            setIsGeneratingImage(false);
+        }
+    };
+
+    const handleSendMessage = (e) => {
+        e.preventDefault();
+        processResponse(input);
+    };
+
     if (!isVisible) return null;
+
+    // Get last user message for quick actions
+    const lastUserMessage = messages.filter(m => m.role === 'user').pop()?.content || 'Futuristic Technology';
 
     return (
         <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed bottom-28 right-6 w-[90vw] max-w-md h-[70vh] flex flex-col glass-panel-kai rounded-2xl shadow-2xl"
-            style={{ zIndex: 'var(--z-kai-chat)' }}
+            key="kai-hover-craft"
+            initial={{ opacity: 0, y: 50, scale: 0.9, rotateX: 10 }}
+            animate={{ opacity: 1, y: [0, -5, 0], scale: 1, rotateX: 0 }}
+            exit={{ opacity: 0, y: 50, scale: 0.8, transition: { duration: 0.2 } }}
+            transition={{ 
+                opacity: { duration: 0.3 }, 
+                y: { duration: 6, repeat: Infinity, ease: "easeInOut" } 
+            }}
+            className="fixed bottom-28 right-6 w-[90vw] sm:w-[420px] h-[70vh] sm:h-[650px] flex flex-col relative overflow-hidden z-50 rounded-3xl shadow-2xl"
+            style={{ perspective: '1000px', zIndex: 'var(--z-kai-chat)' }}
         >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-glass-border">
-                <div className="flex items-center gap-3">
-                    <div className="relative">
-                        <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border-2 border-cyan-400/40 shadow-[0_0_15px_rgba(6,182,212,0.4)]">
-                            <video
-                                src="https://i.imgur.com/MwJEV84.mp4"
-                                autoPlay
-                                loop
-                                muted
-                                playsInline
-                                className="w-full h-full object-contain"
-                            />
-                        </div>
-                        <span className="absolute bottom-0 right-0 block h-3 w-3 rounded-full bg-cyan-400 ring-2 ring-background shadow-[0_0_8px_rgba(6,182,212,0.8)]"></span>
+            {/* --- THE CRAFT CHASSIS --- */}
+            <div className="absolute inset-0 bg-[#050A14] bg-opacity-95 backdrop-blur-xl z-0"></div>
+            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10 z-0 mix-blend-overlay"></div>
+            <div className="absolute inset-0 border-[1px] border-cyan-500/30 rounded-3xl pointer-events-none z-50 shadow-[inset_0_0_20px_rgba(34,211,238,0.1)]"></div>
+
+            {/* HEADER: SENSORS & ID */}
+            <div className="h-20 flex items-center justify-between px-6 bg-black/40 border-b border-cyan-500/20 relative z-20">
+                <div className="flex items-center gap-4">
+                    {/* Holographic Avatar Container */}
+                    <div className="relative w-12 h-12">
+                         <div className="absolute inset-0 bg-cyan-500/20 rounded-full animate-pulse blur-md"></div>
+                         <div className="w-full h-full rounded-full overflow-hidden border border-cyan-400/50 relative z-10 bg-black">
+                            <video src="https://i.imgur.com/MwJEV84.mp4" autoPlay loop muted playsInline className="w-full h-full object-cover scale-125" />
+                         </div>
+                         {/* Status Light */}
+                         <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-black rounded-full z-20"></div>
                     </div>
                     <div>
-                        <h3 className="text-lg font-bold text-text-primary">KAI AI Companion</h3>
-                        <p className="text-xs text-cyan-400">Online</p>
+                        <h3 className="text-white font-bold tracking-widest text-xs uppercase">IRYCCENT AI</h3>
+                        <div className="flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 bg-cyan-500 rounded-full animate-pulse"></span>
+                            <span className="text-[10px] text-cyan-400 font-mono">ONLINE</span>
+                        </div>
                     </div>
                 </div>
-                <Button variant="ghost" size="icon" onClick={onClose} className="text-text-secondary hover:text-text-primary">
-                    <X className="h-5 w-5" />
-                </Button>
+                <button onClick={onClose} className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">
+                    <X className="w-6 h-6" />
+                </button>
             </div>
 
-            {/* Messages Area */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3">
-                <AnimatePresence>
-                    {messages.map((message, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className={`flex items-end gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                        >
-                            {message.role === 'assistant' && <Bot className="h-6 w-6 text-accent-primary self-start flex-shrink-0" />}
-                            <div
-                                className={`max-w-[85%] rounded-lg px-4 py-3 ${message.role === 'user'
-                                        ? 'bg-accent-primary/80 text-white'
-                                        : 'bg-background/50'
-                                    }`}
-                            >
-                                {message.isImage && message.imageUrl ? (
-                                    <img 
-                                        src={message.imageUrl} 
-                                        alt="Imagen generada por KAI" 
-                                        className="max-w-full rounded-lg mt-2"
-                                    />
-                                ) : (
-                                    <div
-                                        className="prose prose-sm prose-invert max-w-none whitespace-pre-wrap break-words"
-                                        style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-                                        dangerouslySetInnerHTML={{ __html: marked.parse(message.content.replace(/\n/g, '\n\n')) }}
-                                    />
-                                )}
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-                {isThinking && (
+            {/* MAIN DISPLAY: CHAT */}
+            <div className="flex-grow overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-thumb-cyan-900/50 scrollbar-track-transparent relative z-10">
+                {messages.map((msg) => (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex items-end gap-2 my-3 justify-start"
+                        key={msg.id}
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                     >
-                        <Bot className="h-6 w-6 text-accent-primary self-start flex-shrink-0" />
-                        <div className="max-w-[85%] rounded-lg px-4 py-3 bg-background/50 flex items-center gap-2">
-                            <Loader2 className="h-4 w-4 animate-spin text-text-secondary" />
-                            <span className="text-sm text-text-secondary">KAI is thinking...</span>
+                        <div className={`max-w-[85%] p-3.5 text-sm shadow-lg backdrop-blur-sm relative ${
+                            msg.role === 'user' 
+                                ? 'bg-cyan-900/30 border border-cyan-500/30 text-cyan-50 rounded-2xl rounded-tr-sm' 
+                                : 'bg-white/5 border border-white/10 text-gray-200 rounded-2xl rounded-tl-sm'
+                        }`}>
+                            <div className="font-light tracking-wide leading-relaxed">{formatMessage(msg.content)}</div>
+                            {msg.imageUrl && (
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 rounded-lg overflow-hidden border border-cyan-500/30 shadow-lg">
+                                    <img src={msg.imageUrl} alt="AI Generated" className="w-full h-auto" />
+                                </motion.div>
+                            )}
                         </div>
                     </motion.div>
-                )}
+                ))}
+                {isThinking && <KaiThinkingIndicator />}
+                {isGeneratingImage && <KaiThinkingIndicator text="Synthesizing..." />}
                 <div ref={messagesEndRef} />
             </div>
 
-            {/* Input Area */}
-            <form onSubmit={handleSendMessage} className="p-4 border-t border-glass-border">
-                <div className="relative">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Ask KAI anything..."
-                        className="w-full pl-4 pr-12 py-3 rounded-lg bg-background/50 border border-glass-border text-text-primary placeholder-text-secondary focus:outline-none focus:ring-2 focus:ring-accent-primary/50"
-                        disabled={isThinking}
+            {/* COMMAND PLATFORM (THE DECK) */}
+            <div className="relative z-30 bg-[#080C14] border-t border-cyan-500/30 p-4 pb-6 shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+                
+                {/* Row 1: Action Chips (The Holographic Deck) */}
+                <div className="flex gap-2 mb-4 overflow-x-auto no-scrollbar pb-1">
+                    <ActionChip 
+                        label="Visualize" 
+                        color="purple"
+                        icon={<ImageIcon className="w-4 h-4" />} 
+                        disabled={isThinking || isGeneratingImage} 
+                        onClick={() => handleImageGeneration(lastUserMessage)} 
                     />
-                    <Button type="submit" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2" disabled={isThinking || !input.trim()}>
-                        <Send className="h-5 w-5" />
-                    </Button>
+                    <ActionChip 
+                        label="Summarize" 
+                        color="cyan"
+                        icon={<Sparkles className="w-4 h-4" />}
+                        disabled={isThinking || isGeneratingImage} 
+                        onClick={() => processResponse("Summarize the key concepts of this context.")} 
+                    />
+                    <ActionChip 
+                        label="Quiz Me" 
+                        color="green"
+                        icon={<span className="font-bold text-xs">?</span>}
+                        disabled={isThinking || isGeneratingImage} 
+                        onClick={() => processResponse("Generate a quick quiz question based on this.")} 
+                    />
                 </div>
-            </form>
+
+                {/* Row 2: The Cockpit (Input) */}
+                <div className="relative flex items-center gap-2">
+                    <div className="relative flex-grow bg-black/50 border border-white/10 focus-within:border-cyan-500/50 focus-within:shadow-[0_0_15px_rgba(34,211,238,0.1)] transition-all duration-300 rounded-xl flex items-center">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            placeholder="Enter command..."
+                            className="w-full bg-transparent text-white placeholder-white/20 px-4 py-3 text-sm focus:outline-none font-mono"
+                            disabled={isThinking || isGeneratingImage}
+                            onKeyDown={(e) => e.key === 'Enter' && !isThinking && processResponse(input)}
+                        />
+                    </div>
+
+                    <button 
+                        onClick={() => processResponse(input)}
+                        disabled={!input.trim() || isThinking || isGeneratingImage}
+                        className="p-3 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 disabled:bg-gray-800 text-white rounded-xl shadow-lg transition-all transform active:scale-95"
+                    >
+                        <Send className="w-5 h-5" />
+                    </button>
+                </div>
+                
+                {/* Footer Diagnostic Line */}
+                <div className="absolute bottom-1 left-0 w-full flex justify-center gap-1 opacity-20">
+                    <div className="h-0.5 w-8 bg-cyan-500"></div>
+                    <div className="h-0.5 w-1 bg-cyan-500"></div>
+                    <div className="h-0.5 w-1 bg-cyan-500"></div>
+                    <div className="h-0.5 w-8 bg-cyan-500"></div>
+                </div>
+            </div>
         </motion.div>
     );
 };
